@@ -167,6 +167,21 @@
 
   .footer-note{ font-size:11px; color:var(--muted); text-align:center; margin-top:22px; line-height:1.5; }
   .hidden{ display:none !important; }
+
+  .rest-timer{
+    position:fixed; left:0; right:0; bottom:0;
+    background: var(--brass); color:#1a1508;
+    padding:14px 16px; display:flex; align-items:center; justify-content:space-between;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.35);
+    z-index: 50;
+  }
+  .rest-timer .rest-label{ font-family:'Oswald',sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; opacity:0.8; }
+  .rest-timer .rest-time{ font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:700; font-variant-numeric: tabular-nums; }
+  .rest-skip{
+    background:#1a1508; color:var(--brass); border:none; border-radius:7px;
+    padding:9px 14px; font-family:'Oswald',sans-serif; font-size:13px; font-weight:600;
+    letter-spacing:0.03em; cursor:pointer;
+  }
 </style>
 </head>
 <body>
@@ -248,6 +263,14 @@
 
 <div class="footer-note">Reps/repos affichés = ceux du microcycle en cours.<br>Dernière charge affichée sous chaque exercice.</div>
 
+<div id="restTimer" class="rest-timer hidden">
+  <div>
+    <div class="rest-label">Repos</div>
+    <div class="rest-time" id="restTimeLeft">--:--</div>
+  </div>
+  <button class="rest-skip" id="restSkipBtn">Passer</button>
+</div>
+
 <script>
 import { supabase } from '../lib/supabase';
 
@@ -303,6 +326,78 @@ const TOTAL_SESSIONS = 72;
 let completedCount = 0;
 let currentMicro = null;
 let currentSeanceLetter = "A";
+let restInterval = null;
+
+function parseRestSeconds(restStr){
+  const s = restStr.toLowerCase().replace(/\s+/g, '');
+  const parts = s.split('-');
+  const first = parts[0];
+  const last = parts[parts.length - 1];
+  const unit = last.includes('min') ? 'min' : (last.includes('sec') ? 'sec' : null);
+
+  function toSeconds(token){
+    let m = token.match(/^(\d+)min(\d+)?$/);
+    if (m) return parseInt(m[1], 10) * 60 + (m[2] ? parseInt(m[2], 10) : 0);
+    m = token.match(/^(\d+)sec$/);
+    if (m) return parseInt(m[1], 10);
+    m = token.match(/^(\d+)$/);
+    if (m && unit) return unit === 'min' ? parseInt(m[1], 10) * 60 : parseInt(m[1], 10);
+    return null;
+  }
+
+  const seconds = toSeconds(first);
+  return seconds === null ? 60 : seconds;
+}
+
+function playBeep(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.3, 0.6].forEach((delay) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = 880;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime + delay);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.2);
+    });
+  }catch(e){}
+}
+
+function updateRestDisplay(remaining){
+  const m = Math.floor(remaining / 60);
+  const s = remaining % 60;
+  document.getElementById('restTimeLeft').textContent = m + ":" + String(s).padStart(2, '0');
+}
+
+function stopRestTimer(){
+  if (restInterval){ clearInterval(restInterval); restInterval = null; }
+  document.getElementById('restTimer').classList.add('hidden');
+}
+
+function startRestTimer(seconds){
+  stopRestTimer();
+  let remaining = seconds;
+  const bar = document.getElementById('restTimer');
+  bar.classList.remove('hidden');
+  updateRestDisplay(remaining);
+  restInterval = setInterval(() => {
+    remaining -= 1;
+    if (remaining <= 0){
+      clearInterval(restInterval);
+      restInterval = null;
+      document.getElementById('restTimeLeft').textContent = "Terminé !";
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
+      playBeep();
+      setTimeout(() => bar.classList.add('hidden'), 3000);
+      return;
+    }
+    updateRestDisplay(remaining);
+  }, 1000);
+}
+
+document.getElementById('restSkipBtn').addEventListener('click', stopRestTimer);
 
 function getWeekFromCount(count){
   const nextIndex = count + 1;
@@ -387,12 +482,13 @@ function render(){
   }
 }
 
-async function getLastLog(exName){
+async function getLastLog(exName, seance){
   try{
     const { data, error } = await supabase
       .from('exercise_logs')
-      .select('poids, reps, date')
+      .select('poids, reps, date, target_reps, target_rest')
       .eq('exercise_name', exName)
+      .eq('seance', seance)
       .order('date', { ascending: false })
       .order('created_at', { ascending: false })
       .limit(1)
@@ -402,7 +498,7 @@ async function getLastLog(exName){
   }catch(e){ return null; }
 }
 
-async function saveLog(exName, poids, reps){
+async function saveLog(exName, poids, reps, seance, targetReps, targetRest){
   try{
     const { error } = await supabase
       .from('exercise_logs')
@@ -410,7 +506,10 @@ async function saveLog(exName, poids, reps){
         exercise_name: exName,
         date: new Date().toISOString().slice(0,10),
         poids,
-        reps
+        reps,
+        seance,
+        target_reps: targetReps,
+        target_rest: targetRest
       });
     return !error;
   }catch(e){ return false; }
@@ -425,10 +524,10 @@ async function renderExercises(){
   for(const exName of data.ex){
     const card = document.createElement('div');
     card.className = "ex-card";
-    const last = await getLastLog(exName);
+    const last = await getLastLog(exName, currentSeanceLetter);
     const lastText = last
-      ? "Dernière fois : " + last.poids + " kg × " + last.reps + " (" + last.date + ")"
-      : "Pas encore de charge enregistrée";
+      ? "Séance " + currentSeanceLetter + " précédente : " + last.poids + " kg × " + last.reps + " (objectif d'alors : " + last.target_reps + " reps · repos " + last.target_rest + ") — " + last.date
+      : "Pas encore de charge enregistrée pour cette séance";
 
     card.innerHTML = `
       <div class="ex-head">
@@ -455,11 +554,12 @@ async function renderExercises(){
       const reps = parseInt(rInput.value, 10);
       if(!poids || !reps) return;
       saveBtn.textContent = "...";
-      const ok = await saveLog(exName, poids, reps);
+      const ok = await saveLog(exName, poids, reps, currentSeanceLetter, currentMicro.reps, currentMicro.rest);
       if(ok){
         flash.style.display = "block";
-        lastLine.textContent = "Dernière fois : " + poids + " kg × " + reps + " (aujourd'hui)";
+        lastLine.textContent = "Séance " + currentSeanceLetter + " précédente : " + poids + " kg × " + reps + " (objectif d'alors : " + currentMicro.reps + " reps · repos " + currentMicro.rest + ") — aujourd'hui";
         setTimeout(() => { flash.style.display = "none"; }, 2000);
+        startRestTimer(parseRestSeconds(currentMicro.rest));
       }
       saveBtn.textContent = "Enregistrer";
     });
@@ -473,6 +573,7 @@ document.getElementById('validateBtn').addEventListener('click', async () => {
   completedCount += 1;
   const ok = await saveCount(completedCount);
   if(!ok){ completedCount -= 1; alert("Erreur d'enregistrement, réessaie."); return; }
+  stopRestTimer();
   render();
 });
 
