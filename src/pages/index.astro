@@ -183,10 +183,10 @@
   }
 
   .ex-info-btn{
-    background:none; border:1px solid var(--line); color:var(--muted); border-radius:50%;
-    width:19px; height:19px; font-size:12px; line-height:1; cursor:pointer; margin-left:7px;
+    background:none; border:1px solid var(--line); color:var(--muted); border-radius:20px;
+    font-size:11px; line-height:1; cursor:pointer; margin-left:8px;
     display:inline-flex; align-items:center; justify-content:center; vertical-align:middle;
-    padding:0;
+    padding:9px 12px; font-family:'Inter',sans-serif; letter-spacing:0.03em;
   }
   .ex-info-btn:active{ background:var(--panel-2); }
 
@@ -744,7 +744,7 @@ async function renderExercises(){
 
     card.innerHTML = `
       <div class="ex-head">
-        <div class="ex-name">${exName}${hasInfo ? '<button type="button" class="ex-info-btn" aria-label="Instructions">ⓘ</button>' : ''}</div>
+        <div class="ex-name">${exName}${hasInfo ? '<button type="button" class="ex-info-btn">ⓘ Infos</button>' : ''}</div>
         <div class="ex-target">${currentMicro.reps} reps<br>repos ${currentMicro.rest}</div>
       </div>
       <div class="ex-inputs">
