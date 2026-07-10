@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Carnet de charge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style is:global>
+  :root{
+    --bg: #17140f;
+    --panel: #221d16;
+    --panel-2: #2b241a;
+    --line: #3a3226;
+    --text: #f1ece1;
+    --muted: #948a76;
+    --brass: #c99a3e;
+    --brass-dim: #7a5f28;
+    --phase-meca: #6f8fa8;
+    --phase-meta: #b3763f;
+    --phase-over: #c15b3c;
+    --ok: #7fa06a;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body{
+    min-height:100vh;
+    padding: 20px 14px 60px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  h1,h2,h3{
+    font-family:'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin:0;
+  }
+  .num{
+    font-family:'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  header.top{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-bottom:18px;
+  }
+  header.top h1{ font-size: 20px; font-weight:700; color: var(--text); }
+  header.top .tag{ font-size:11px; color:var(--brass); letter-spacing:0.12em; font-family:'Oswald',sans-serif; }
+  .settings-btn{
+    background:none; border:1px solid var(--line); color:var(--muted);
+    font-size:11px; padding:5px 9px; border-radius:6px; cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+  .settings-btn:active{ background: var(--panel-2); }
+
+  .card{
+    background: var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px;
+    margin-bottom:14px;
+  }
+  .card p{ color:var(--muted); font-size:13px; line-height:1.5; margin:6px 0 14px; }
+  label{ display:block; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
+  input[type=number]{
+    width:100%; background:var(--bg); border:1px solid var(--line);
+    color:var(--text); border-radius:7px; padding:10px 12px;
+    font-family:'JetBrains Mono', monospace; font-size:15px;
+  }
+  input:focus{ outline:2px solid var(--brass); outline-offset:1px; }
+  button.primary{
+    width:100%; background:var(--brass); color:#1a1508; border:none;
+    font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.05em;
+    font-weight:600; font-size:14px; padding:12px; border-radius:8px; margin-top:12px;
+    cursor:pointer;
+  }
+  button.primary:active{ background:#b3872f; }
+  button.ghost{
+    width:100%; background:transparent; color:var(--muted); border:1px solid var(--line);
+    font-family:'Inter',sans-serif; font-size:12px; padding:9px; border-radius:8px; margin-top:8px;
+    cursor:pointer;
+  }
+  button.ghost:active{ background:var(--panel-2); }
+
+  /* Position dashboard */
+  .position-card{ padding:16px 16px 18px; }
+  .position-top{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:14px; }
+  .week-label{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
+  .week-num{ font-size:30px; font-weight:700; line-height:1; }
+  .week-sub{ font-size:11px; color:var(--muted); margin-top:2px; }
+  .meso-name{ text-align:right; }
+  .meso-name .n{ font-size:15px; font-weight:600; }
+  .meso-name .r{ font-size:11px; color:var(--muted); }
+
+  .bar{ display:flex; gap:2px; margin: 10px 0 8px; }
+  .bar .seg{ flex:1; height:10px; border-radius:2px; background:var(--line); }
+  .bar .seg.meca{ background: var(--phase-meca); opacity:0.35; }
+  .bar .seg.meta{ background: var(--phase-meta); opacity:0.35; }
+  .bar .seg.over{ background: var(--phase-over); opacity:0.35; }
+  .bar .seg.done{ opacity:0.9 !important; }
+  .bar .seg.current{ outline:2px solid var(--text); outline-offset:1px; opacity:1 !important; }
+  .bar-meta{ display:flex; justify-content:space-between; font-size:10px; color:var(--muted); margin-bottom:14px; }
+
+  .micro-info{
+    display:flex; gap:10px; background:var(--panel-2); border-radius:8px; padding:10px 12px;
+    align-items:center;
+  }
+  .micro-dot{ width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+  .micro-dot.meca{ background:var(--phase-meca); }
+  .micro-dot.meta{ background:var(--phase-meta); }
+  .micro-dot.over{ background:var(--phase-over); }
+  .micro-text .n{ font-size:13px; font-weight:600; }
+  .micro-text .d{ font-size:12px; color:var(--muted); }
+  .micro-note{ font-size:11px; color:var(--brass); margin-top:6px; line-height:1.4; }
+
+  .next-banner{
+    display:flex; align-items:center; justify-content:space-between;
+    background: var(--panel-2); border:1px solid var(--brass-dim); border-radius:9px;
+    padding:12px 14px; margin: 14px 0 10px;
+  }
+  .next-banner .lbl{ font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
+  .next-banner .val{ font-family:'Oswald',sans-serif; font-size:20px; font-weight:700; color:var(--brass); }
+
+  .ex-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:14px; margin-bottom:10px;
+  }
+  .ex-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .ex-name{ font-size:14.5px; font-weight:600; line-height:1.3; }
+  .ex-target{
+    flex-shrink:0; text-align:right; font-family:'JetBrains Mono',monospace;
+    font-size:11px; color:var(--brass); white-space:nowrap;
+  }
+  .ex-last{ font-size:11px; color:var(--muted); margin-top:4px; }
+  .ex-inputs{ display:flex; gap:8px; margin-top:10px; }
+  .ex-inputs .field{ flex:1; }
+  .ex-inputs input{ padding:9px 10px; font-size:14px; }
+  .ex-save{
+    background:var(--panel-2); border:1px solid var(--line); color:var(--text);
+    border-radius:7px; padding:9px 14px; font-family:'Oswald',sans-serif;
+    font-size:13px; font-weight:600; letter-spacing:0.03em; cursor:pointer;
+    white-space:nowrap;
+  }
+  .ex-save:active{ background:var(--brass-dim); }
+  .ex-saved-flash{ font-size:11px; color:var(--ok); margin-top:6px; display:none; }
+
+  .validate-btn{
+    width:100%; background: var(--ok); color:#12200e; border:none;
+    font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.05em;
+    font-weight:700; font-size:15px; padding:14px; border-radius:9px; margin: 6px 0 4px;
+    cursor:pointer;
+  }
+  .validate-btn:active{ background:#6c8a5a; }
+  .validate-sub{ text-align:center; font-size:11px; color:var(--muted); margin-bottom:14px; }
+
+  .settings-row{ display:flex; gap:8px; align-items:flex-end; margin-bottom:6px; }
+  .settings-row .field{ flex:1; }
+  .undo-row{ margin-top:10px; }
+
+  .done-banner{ text-align:center; padding:30px 10px; }
+  .done-banner .n{ font-size:15px; font-weight:600; color:var(--brass); font-family:'Oswald',sans-serif; }
+
+  .footer-note{ font-size:11px; color:var(--muted); text-align:center; margin-top:22px; line-height:1.5; }
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div>
+    <h1>Carnet de charge</h1>
+    <div class="tag">PECS · BRAS · ABDOS</div>
+  </div>
+  <button class="settings-btn" id="settingsBtn">Réglages</button>
+</header>
+
+<div id="settingsPanel" class="card hidden">
+  <h3 style="font-size:14px;">Réglages du compteur</h3>
+  <p>Le programme avance uniquement quand tu valides une séance — aucune date n'entre en jeu, donc rater une semaine ne décale rien.</p>
+  <div class="settings-row">
+    <div class="field">
+      <label for="manualCount">Séances déjà validées</label>
+      <input type="number" id="manualCount" min="0" max="72">
+    </div>
+  </div>
+  <button class="primary" id="saveCountBtn">Enregistrer</button>
+  <div class="undo-row">
+    <button class="ghost" id="undoBtn">Annuler la dernière séance validée</button>
+  </div>
+  <button class="ghost" id="closeSettingsBtn">Fermer</button>
+</div>
+
+<div id="mainApp">
+
+  <div class="card position-card">
+    <div class="position-top">
+      <div>
+        <div class="week-label">Semaine</div>
+        <div class="week-num num" id="weekNum">—</div>
+        <div class="week-sub num" id="sessionCount">—</div>
+      </div>
+      <div class="meso-name">
+        <div class="n" id="mesoName">—</div>
+        <div class="r" id="mesoRange">—</div>
+      </div>
+    </div>
+
+    <div class="bar" id="weekBar"></div>
+    <div class="bar-meta"><span>S1</span><span>S8</span><span>S16</span><span>S24</span></div>
+
+    <div class="micro-info">
+      <div class="micro-dot" id="microDot"></div>
+      <div class="micro-text">
+        <div class="n" id="microName">—</div>
+        <div class="d" id="microDetail">—</div>
+      </div>
+    </div>
+    <div class="micro-note" id="microNote"></div>
+  </div>
+
+  <div id="activeZone">
+    <div class="next-banner">
+      <div>
+        <div class="lbl">Prochaine séance</div>
+        <div class="val" id="nextSeanceLabel">—</div>
+      </div>
+    </div>
+
+    <div class="seance-title" id="seanceTitle" style="font-size:12px;color:var(--muted);margin:4px 2px 10px;"></div>
+
+    <div id="exList"></div>
+
+    <button class="validate-btn" id="validateBtn">✓ Séance validée — passer à la suivante</button>
+    <div class="validate-sub">Fait avancer le compteur d'une séance (A → B → C → A…)</div>
+  </div>
+
+  <div id="macroDone" class="card done-banner hidden">
+    <div class="n">Macrocycle terminé — 72/72 séances</div>
+    <p>C'est le moment de réévaluer objectifs et programme pour la suite.</p>
+  </div>
+
+</div>
+
+<div class="footer-note">Reps/repos affichés = ceux du microcycle en cours.<br>Dernière charge affichée sous chaque exercice.</div>
+
+<script>
+import { supabase } from '../lib/supabase';
+
+const PROGRAM = [
+  { name:"Force", start:1, end:8, micro:[
+    { key:"meca", name:"Stress mécanique", w:[1,3], reps:"6-8", rest:"2-3 min", note:"" },
+    { key:"meta", name:"Consolidation", w:[4,6], reps:"4-6", rest:"3 min", note:"" },
+    { key:"over", name:"Overreaching", w:[7,8], reps:"4-6", rest:"3 min", note:"+1 série sur les mouvements principaux · rest-pause sur le dernier exercice · deload optionnel les 2-3 derniers jours si besoin" }
+  ]},
+  { name:"Prise de muscle", start:9, end:16, micro:[
+    { key:"meca", name:"Stress mécanique", w:[9,11], reps:"8-10", rest:"1min30-2min", note:"" },
+    { key:"meta", name:"Stress métabolique", w:[12,14], reps:"10-15", rest:"45sec-1min", note:"" },
+    { key:"over", name:"Overreaching", w:[15,16], reps:"10-15", rest:"45sec-1min", note:"+1 série · superset/drop set sur 1-2 exercices · deload optionnel les 2-3 derniers jours si besoin" }
+  ]},
+  { name:"Perte de gras", start:17, end:24, micro:[
+    { key:"meca", name:"Densité — phase 1", w:[17,19], reps:"10-15", rest:"1 min", note:"" },
+    { key:"meta", name:"Densité — phase 2", w:[20,22], reps:"10-15", rest:"45 sec", note:"" },
+    { key:"over", name:"Densité maximale", w:[23,24], reps:"10-15", rest:"30-45 sec", note:"Fin de macrocycle — pas de deload nécessaire, moment de réévaluer le programme" }
+  ]}
+];
+
+const SEANCES = {
+  A: { label:"Séance A — Pecs + Abdos", ex:[
+    "Développé couché barre",
+    "Développé légèrement décliné",
+    "Écarté poulie vis-à-vis, assis",
+    "Dips barres parallèles",
+    "Crunch poulie haute",
+    "Relevé de jambes"
+  ]},
+  B: { label:"Séance B — Bras + Abdos", ex:[
+    "Curl poulie basse",
+    "Tractions supination",
+    "Curl incliné haltères",
+    "Extensions trichées",
+    "Dips triceps sur banc",
+    "Crunch poulie haute",
+    "Relevé de jambes suspendu"
+  ]},
+  C: { label:"Séance C — Pecs + Bras + Abdos + Dos", ex:[
+    "Développé machine convergente",
+    "Curl marteau",
+    "Dips triceps sur banc",
+    "Tirage vertical/Tractions (dos)",
+    "Crunch poulie haute",
+    "Relevé de jambes"
+  ]}
+};
+
+const SEANCE_ORDER = ["A","B","C"];
+const TOTAL_SESSIONS = 72;
+
+let completedCount = 0;
+let currentMicro = null;
+let currentSeanceLetter = "A";
+
+function getWeekFromCount(count){
+  const nextIndex = count + 1;
+  let week = Math.ceil(nextIndex / 3);
+  if (week > 24) week = 24;
+  if (week < 1) week = 1;
+  return week;
+}
+
+function getPosition(week){
+  const meso = PROGRAM.find(m => week >= m.start && week <= m.end);
+  const micro = meso.micro.find(mc => week >= mc.w[0] && week <= mc.w[1]);
+  return { meso, micro };
+}
+
+function renderBar(week){
+  const bar = document.getElementById('weekBar');
+  bar.innerHTML = "";
+  for(let w=1; w<=24; w++){
+    const pos = getPosition(w);
+    const seg = document.createElement('div');
+    seg.className = "seg " + pos.micro.key;
+    if (w < week || (w === week)) seg.classList.add('done');
+    if (w === week) seg.classList.add('current');
+    bar.appendChild(seg);
+  }
+}
+
+async function loadCount(){
+  try{
+    const { data, error } = await supabase
+      .from('progress')
+      .select('completed_count')
+      .eq('id', 1)
+      .single();
+    if (error || !data) return 0;
+    return data.completed_count;
+  }catch(e){ return 0; }
+}
+
+async function saveCount(val){
+  try{
+    const { error } = await supabase
+      .from('progress')
+      .update({ completed_count: val })
+      .eq('id', 1);
+    return !error;
+  }catch(e){ return false; }
+}
+
+function render(){
+  if (completedCount >= TOTAL_SESSIONS){
+    document.getElementById('activeZone').classList.add('hidden');
+    document.getElementById('macroDone').classList.remove('hidden');
+  } else {
+    document.getElementById('activeZone').classList.remove('hidden');
+    document.getElementById('macroDone').classList.add('hidden');
+  }
+
+  const week = getWeekFromCount(Math.min(completedCount, TOTAL_SESSIONS - 1));
+  const pos = getPosition(week);
+  currentMicro = pos.micro;
+
+  const nextIndex = completedCount + 1;
+  currentSeanceLetter = SEANCE_ORDER[(nextIndex - 1) % 3];
+
+  document.getElementById('weekNum').textContent = week + " / 24";
+  document.getElementById('sessionCount').textContent = completedCount + " / " + TOTAL_SESSIONS + " séances validées";
+  document.getElementById('mesoName').textContent = pos.meso.name;
+  document.getElementById('mesoRange').textContent = "Semaines " + pos.meso.start + "–" + pos.meso.end;
+
+  document.getElementById('microDot').className = "micro-dot " + pos.micro.key;
+  document.getElementById('microName').textContent = pos.micro.name;
+  document.getElementById('microDetail').textContent = pos.micro.reps + " reps · repos " + pos.micro.rest;
+  document.getElementById('microNote').textContent = pos.micro.note || "";
+
+  renderBar(week);
+
+  if (completedCount < TOTAL_SESSIONS){
+    document.getElementById('nextSeanceLabel').textContent = "Séance " + currentSeanceLetter;
+    renderExercises();
+  }
+}
+
+async function getLastLog(exName){
+  try{
+    const { data, error } = await supabase
+      .from('exercise_logs')
+      .select('poids, reps, date')
+      .eq('exercise_name', exName)
+      .order('date', { ascending: false })
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error || !data) return null;
+    return data;
+  }catch(e){ return null; }
+}
+
+async function saveLog(exName, poids, reps){
+  try{
+    const { error } = await supabase
+      .from('exercise_logs')
+      .insert({
+        exercise_name: exName,
+        date: new Date().toISOString().slice(0,10),
+        poids,
+        reps
+      });
+    return !error;
+  }catch(e){ return false; }
+}
+
+async function renderExercises(){
+  const container = document.getElementById('exList');
+  const data = SEANCES[currentSeanceLetter];
+  document.getElementById('seanceTitle').textContent = data.label;
+  container.innerHTML = "";
+
+  for(const exName of data.ex){
+    const card = document.createElement('div');
+    card.className = "ex-card";
+    const last = await getLastLog(exName);
+    const lastText = last
+      ? "Dernière fois : " + last.poids + " kg × " + last.reps + " (" + last.date + ")"
+      : "Pas encore de charge enregistrée";
+
+    card.innerHTML = `
+      <div class="ex-head">
+        <div class="ex-name">${exName}</div>
+        <div class="ex-target">${currentMicro.reps} reps<br>repos ${currentMicro.rest}</div>
+      </div>
+      <div class="ex-last">${lastText}</div>
+      <div class="ex-inputs">
+        <div class="field"><input type="number" placeholder="kg" class="w-input" inputmode="decimal"></div>
+        <div class="field"><input type="number" placeholder="reps" class="r-input" inputmode="numeric"></div>
+        <button class="ex-save">Enregistrer</button>
+      </div>
+      <div class="ex-saved-flash">✓ Enregistré</div>
+    `;
+
+    const wInput = card.querySelector('.w-input');
+    const rInput = card.querySelector('.r-input');
+    const saveBtn = card.querySelector('.ex-save');
+    const flash = card.querySelector('.ex-saved-flash');
+    const lastLine = card.querySelector('.ex-last');
+
+    saveBtn.addEventListener('click', async () => {
+      const poids = parseFloat(wInput.value);
+      const reps = parseInt(rInput.value, 10);
+      if(!poids || !reps) return;
+      saveBtn.textContent = "...";
+      const ok = await saveLog(exName, poids, reps);
+      if(ok){
+        flash.style.display = "block";
+        lastLine.textContent = "Dernière fois : " + poids + " kg × " + reps + " (aujourd'hui)";
+        wInput.value = ""; rInput.value = "";
+        setTimeout(() => { flash.style.display = "none"; }, 2000);
+      }
+      saveBtn.textContent = "Enregistrer";
+    });
+
+    container.appendChild(card);
+  }
+}
+
+document.getElementById('validateBtn').addEventListener('click', async () => {
+  if (completedCount >= TOTAL_SESSIONS) return;
+  completedCount += 1;
+  const ok = await saveCount(completedCount);
+  if(!ok){ completedCount -= 1; alert("Erreur d'enregistrement, réessaie."); return; }
+  render();
+});
+
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  document.getElementById('manualCount').value = completedCount;
+  document.getElementById('settingsPanel').classList.remove('hidden');
+});
+document.getElementById('closeSettingsBtn').addEventListener('click', () => {
+  document.getElementById('settingsPanel').classList.add('hidden');
+});
+document.getElementById('saveCountBtn').addEventListener('click', async () => {
+  let val = parseInt(document.getElementById('manualCount').value, 10);
+  if(isNaN(val)) return;
+  if(val < 0) val = 0;
+  if(val > 72) val = 72;
+  const ok = await saveCount(val);
+  if(ok){
+    completedCount = val;
+    document.getElementById('settingsPanel').classList.add('hidden');
+    render();
+  }
+});
+document.getElementById('undoBtn').addEventListener('click', async () => {
+  if(completedCount <= 0) return;
+  const val = completedCount - 1;
+  const ok = await saveCount(val);
+  if(ok){
+    completedCount = val;
+    document.getElementById('manualCount').value = completedCount;
+    render();
+  }
+});
+
+async function init(){
+  completedCount = await loadCount();
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
