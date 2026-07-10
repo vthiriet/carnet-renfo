@@ -25,7 +25,7 @@
 - Mésocycle 1 (semaines 1-8) : Force — 4-8 reps, repos 2-3min, charges lourdes
 - Mésocycle 2 (semaines 9-16) : Prise de muscle — 8-15 reps, repos 45sec-2min
 - Mésocycle 3 (semaines 17-24) : Perte de gras — reps/charges maintenues, densité de travail augmentée (repos réduits progressivement)
-- Deload de 3-7 jours entre chaque mésocycle (charges/volume divisés par 2)
+- Deload optionnel : pas de semaine dédiée, intégré aux 2-3 derniers jours du microcycle overreaching (charges -40 à -50%, volume divisé par 2) si besoin ressenti — sinon on enchaîne directement sur le mésocycle suivant
 - Chaque mésocycle se découpe en 3 microcycles (stress mécanique → stress métabolique/consolidation → overreaching)
 - Les exercices restent identiques sur tout le macrocycle ; seules les variables (reps/charges/repos) changent
 
@@ -74,8 +74,8 @@ Les reps/charges/repos à appliquer à chaque exercice dépendent du mésocycle 
 **Bloc abdos** : identique aux séances A/B
 
 ## Suivi (à mettre à jour au fil du temps)
-- Mésocycle en cours : [à compléter]
-- Semaine en cours : [à compléter]
+- Nombre de séances validées depuis le début du macrocycle : [à compléter] / 72
+- Note : la progression se base sur ce compteur de séances validées, pas sur des dates — rater une séance ne décale rien, il suffit de reprendre au prochain numéro non validé
 - Charges actuelles sur les mouvements clés : [à compléter]
 
 ## Consignes pour Claude
