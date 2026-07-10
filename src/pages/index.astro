@@ -246,8 +246,6 @@
       </div>
     </div>
 
-    <div class="seance-title" id="seanceTitle" style="font-size:12px;color:var(--muted);margin:4px 2px 10px;"></div>
-
     <div id="exList"></div>
 
     <button class="validate-btn" id="validateBtn">✓ Séance validée — passer à la suivante</button>
@@ -293,7 +291,7 @@ const PROGRAM = [
 ];
 
 const SEANCES = {
-  A: { label:"Séance A — Pecs + Abdos", ex:[
+  A: { label:"Séance A : Pecs + Abdos", ex:[
     "Développé couché barre",
     "Développé légèrement décliné",
     "Écarté poulie vis-à-vis, assis",
@@ -301,7 +299,7 @@ const SEANCES = {
     "Crunch poulie haute",
     "Relevé de jambes"
   ]},
-  B: { label:"Séance B — Bras + Abdos", ex:[
+  B: { label:"Séance B : Bras + Abdos", ex:[
     "Curl poulie basse",
     "Tractions supination",
     "Curl incliné haltères",
@@ -310,7 +308,7 @@ const SEANCES = {
     "Crunch poulie haute",
     "Relevé de jambes suspendu"
   ]},
-  C: { label:"Séance C — Pecs + Bras + Abdos + Dos", ex:[
+  C: { label:"Séance C : Pecs + Bras + Abdos + Dos", ex:[
     "Développé machine convergente",
     "Curl marteau",
     "Dips triceps sur banc",
@@ -477,7 +475,7 @@ function render(){
   renderBar(week);
 
   if (completedCount < TOTAL_SESSIONS){
-    document.getElementById('nextSeanceLabel').textContent = "Séance " + currentSeanceLetter;
+    document.getElementById('nextSeanceLabel').textContent = SEANCES[currentSeanceLetter].label;
     renderExercises();
   }
 }
@@ -518,7 +516,6 @@ async function saveLog(exName, poids, reps, seance, targetReps, targetRest){
 async function renderExercises(){
   const container = document.getElementById('exList');
   const data = SEANCES[currentSeanceLetter];
-  document.getElementById('seanceTitle').textContent = data.label;
   container.innerHTML = "";
 
   for(const exName of data.ex){
