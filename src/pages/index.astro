@@ -459,7 +459,6 @@ async function renderExercises(){
       if(ok){
         flash.style.display = "block";
         lastLine.textContent = "Dernière fois : " + poids + " kg × " + reps + " (aujourd'hui)";
-        wInput.value = ""; rInput.value = "";
         setTimeout(() => { flash.style.display = "none"; }, 2000);
       }
       saveBtn.textContent = "Enregistrer";
