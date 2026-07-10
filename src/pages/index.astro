@@ -181,6 +181,39 @@
     padding:9px 14px; font-family:'Oswald',sans-serif; font-size:13px; font-weight:600;
     letter-spacing:0.03em; cursor:pointer;
   }
+
+  .ex-info-btn{
+    background:none; border:1px solid var(--line); color:var(--muted); border-radius:50%;
+    width:19px; height:19px; font-size:12px; line-height:1; cursor:pointer; margin-left:7px;
+    display:inline-flex; align-items:center; justify-content:center; vertical-align:middle;
+    padding:0;
+  }
+  .ex-info-btn:active{ background:var(--panel-2); }
+
+  .info-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.6);
+    display:flex; align-items:flex-end; justify-content:center;
+    z-index:100;
+  }
+  .info-sheet{
+    background:var(--panel); border:1px solid var(--line); border-bottom:none;
+    border-top-left-radius:16px; border-top-right-radius:16px;
+    width:100%; max-width:480px; max-height:75vh; overflow-y:auto;
+    padding:18px 18px 26px;
+  }
+  .info-sheet-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:10px; }
+  .info-sheet-title{ font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; text-transform:uppercase; letter-spacing:0.03em; }
+  .info-close{ background:none; border:none; color:var(--muted); font-size:20px; line-height:1; cursor:pointer; padding:4px 6px; flex-shrink:0; }
+  .info-video-link{
+    display:inline-block; margin-bottom:12px; color:var(--brass); font-size:13px;
+    text-decoration:none; border:1px solid var(--brass-dim); border-radius:7px; padding:8px 12px;
+  }
+  .info-steps{ margin:0 0 4px; padding-left:20px; color:var(--text); font-size:13px; line-height:1.6; }
+  .info-variant-name{
+    font-family:'Oswald',sans-serif; font-size:12px; color:var(--brass);
+    text-transform:uppercase; letter-spacing:0.05em; margin:16px 0 8px;
+  }
+  .info-variant-name:first-child{ margin-top:0; }
 </style>
 </head>
 <body>
@@ -268,6 +301,16 @@
   <button class="rest-skip" id="restSkipBtn">Passer</button>
 </div>
 
+<div id="exerciseInfoOverlay" class="info-overlay hidden">
+  <div class="info-sheet">
+    <div class="info-sheet-head">
+      <div class="info-sheet-title" id="infoSheetTitle"></div>
+      <button class="info-close" id="infoCloseBtn" aria-label="Fermer">✕</button>
+    </div>
+    <div id="infoSheetBody"></div>
+  </div>
+</div>
+
 <script>
 import { supabase } from '../lib/supabase';
 
@@ -315,6 +358,151 @@ const SEANCES = {
     "Crunch poulie haute",
     "Relevé de jambes"
   ]}
+};
+
+const EXERCISE_INFO = {
+  "Développé couché barre": {
+    video: "https://www.youtube.com/watch?v=qq_bX5iw0HY&t=537s",
+    steps: [
+      "Barre à hauteur du sternum",
+      "Omoplates serrées et légèrement rétractées, pieds ancrés au sol",
+      "Descente contrôlée jusqu'à effleurer la poitrine, coudes à 45-70° du corps (ni collés, ni à 90°)",
+      "Remontée jusqu'à extension complète des bras"
+    ]
+  },
+  "Développé légèrement décliné": {
+    video: "https://www.youtube.com/watch?v=qq_bX5iw0HY&t=437s",
+    steps: [
+      "Régler le banc avec un léger angle décliné (10-20°)",
+      "Amplitude complète, descente contrôlée jusqu'à la poitrine",
+      "Remontée en poussant, sans verrouiller brutalement les coudes en haut"
+    ]
+  },
+  "Écarté poulie vis-à-vis, assis": {
+    video: "https://www.youtube.com/watch?v=qq_bX5iw0HY&t=235s",
+    steps: [
+      "S'asseoir entre les deux poulies pour une bonne stabilité (pas debout en marchant vers l'avant)",
+      "Garder les coudes verrouillés et les omoplates serrées du début à la fin",
+      "Ramener les poignées vers l'avant en gardant une légère flexion des coudes fixe",
+      "Position des mains : plus haut pour cibler le haut des pecs, plus bas pour le bas des pecs"
+    ]
+  },
+  "Dips barres parallèles": {
+    video: "https://www.youtube.com/watch?v=qq_bX5iw0HY&t=437s",
+    steps: [
+      "Se pencher en avant sur toute la durée du mouvement (une position droite sollicite plus les triceps que les pecs)",
+      "Descendre en amplitude complète si possible",
+      "En cas de douleur au sternum/épaule, réduire légèrement l'amplitude plutôt que d'abandonner l'exercice",
+      "Progresser la charge (lest) petit à petit"
+    ]
+  },
+  "Développé machine convergente": {
+    video: "https://www.youtube.com/watch?v=qq_bX5iw0HY&t=344s",
+    steps: [
+      "Choisir une machine à bonne courbe de résistance si possible (plus difficile en haut du mouvement qu'en bas)",
+      "Position haute ou basse au choix (haut ou bas des pecs)",
+      "Pousser en contrôlant le retour, sans à-coups"
+    ]
+  },
+  "Extensions trichées": {
+    video: "https://www.youtube.com/watch?v=cXNeX_t08wQ&t=506s",
+    steps: [
+      "Allongé sur un banc, haltères tendus au-dessus de la poitrine",
+      "Phase 1 : fléchir les coudes pour amener les haltères vers le front",
+      "Phase 2 : depuis cette position, continuer à ramener les haltères loin derrière la tête pour étirer la longue portion du triceps",
+      "Revenir en sens inverse : ramener les coudes au niveau de la poitrine puis tendre les bras en extension complète",
+      "Commencer léger pour apprivoiser la trajectoire avant d'augmenter la charge ; garder le mouvement contrôlé, sans inertie"
+    ]
+  },
+  "Dips triceps sur banc": {
+    video: "https://www.youtube.com/watch?v=cXNeX_t08wQ&t=391s",
+    steps: [
+      "Mains posées sur un banc derrière toi, jambes tendues devant (ou pliées pour réduire la difficulté)",
+      "Poser des disques sur les cuisses pour charger",
+      "Descendre en fléchissant les coudes, remonter en extension complète",
+      "Ne pas surcharger au détriment de la qualité du mouvement"
+    ]
+  },
+  "Curl poulie basse": {
+    video: "https://www.youtube.com/watch?v=di2pTqQKdss&t=534s",
+    steps: [
+      "Se placer face à la poulie basse, bras tendus vers le bas",
+      "Garder l'humérus perpendiculaire au sol du début à la fin (ne pas reculer les coudes en arrière)",
+      "Fléchir les coudes pour ramener la poignée vers le haut, en résistant à la traction du câble",
+      "Redescendre en contrôlant, sans relâcher la tension",
+      "Faisable en unilatéral si besoin"
+    ]
+  },
+  "Tractions supination": {
+    video: "https://www.youtube.com/watch?v=di2pTqQKdss&t=401s",
+    steps: [
+      "Suspendu à la barre, prise supination (paumes vers soi), mains écartées largeur d'épaules",
+      "Tirer le corps vers le haut jusqu'à ce que le menton dépasse la barre",
+      "Redescendre en contrôlant jusqu'à extension complète des bras",
+      "Si tu ne tiens pas 10-12 reps propres, privilégie le curl poulie basse en attendant de progresser sur cet exercice"
+    ]
+  },
+  "Curl incliné haltères": {
+    video: "https://www.youtube.com/watch?v=di2pTqQKdss&t=314s",
+    steps: [
+      "S'asseoir sur un banc incliné, dos bien callé, bras pendants de chaque côté",
+      "Laisser les bras s'étirer complètement en bas du mouvement",
+      "Fléchir les coudes pour remonter les haltères",
+      "Ajuster l'angle du banc selon ta souplesse : plus redressé au début, plus incliné avec l'expérience"
+    ]
+  },
+  "Curl marteau": {
+    video: "https://www.youtube.com/shorts/IAxKbIuoPKc",
+    steps: [
+      "Haltères en prise neutre (position \"marteau\", paume vers l'intérieur)",
+      "Privilégier un mouvement unilatéral, légèrement sur le côté, pour bien isoler le biceps",
+      "Garder le coude fixe le long du corps",
+      "Marquer un pic de contraction en haut du mouvement",
+      "Contrôler la phase excentrique (la descente)",
+      "C'est un exercice d'isolation : la qualité d'exécution prime sur la charge"
+    ]
+  },
+  "Crunch poulie haute": {
+    video: "https://www.youtube.com/watch?v=IYUQPA4BwJo&t=316s",
+    steps: [
+      "À genoux face à la poulie haute, corde tenue de chaque côté de la tête",
+      "Fléchir la colonne vertébrale en amenant le buste vers le bas (mouvement du torse, pas des bras)",
+      "Remonter en contrôlant, sans relâcher la tension complètement"
+    ]
+  },
+  "Relevé de jambes suspendu": {
+    video: "https://www.youtube.com/watch?v=IYUQPA4BwJo&t=324s",
+    steps: [
+      "Suspendu à la barre, jambes tendues ou légèrement fléchies",
+      "Relever les jambes en fléchissant la colonne via le bassin (pas juste un mouvement de hanche)",
+      "Redescendre en contrôlant, sans donner d'élan"
+    ]
+  },
+  "Tirage vertical/Tractions (dos)": {
+    variants: [
+      {
+        name: "Tirage vertical, prise supination",
+        video: "https://www.youtube.com/watch?v=Ibr1O8UxU3E&t=331s",
+        steps: [
+          "Assis face à la poulie haute, prise supination (paumes vers soi)",
+          "Démarrer bras légèrement fléchi (pas tendu) et buste légèrement penché en arrière pour ne pas trop étirer le dos au départ",
+          "Tirer la barre vers le haut de la poitrine en amenant les coudes vers le bas et l'arrière",
+          "Redescendre en contrôlant jusqu'à extension quasi complète",
+          "Avec l'expérience, progresser vers une amplitude plus complète et un buste plus redressé"
+        ]
+      },
+      {
+        name: "Tractions pronation",
+        video: "https://www.youtube.com/watch?v=Ibr1O8UxU3E&t=438s",
+        steps: [
+          "Suspendu à la barre, prise pronation (paumes vers l'avant), mains écartées largeur d'épaules",
+          "Tirer le corps vers le haut jusqu'au menton",
+          "Redescendre en contrôlant jusqu'à extension complète",
+          "Si la progression en charge est difficile au-delà d'un certain nombre de reps, ce n'est pas anormal"
+        ]
+      }
+    ]
+  }
 };
 
 const SEANCE_ORDER = ["A","B","C"];
@@ -395,6 +583,37 @@ function startRestTimer(seconds){
 }
 
 document.getElementById('restSkipBtn').addEventListener('click', stopRestTimer);
+
+function renderExerciseInfoBody(info){
+  if (info.variants){
+    return info.variants.map(v => `
+      <div class="info-variant-name">${v.name}</div>
+      <a class="info-video-link" href="${v.video}" target="_blank" rel="noopener">▶ Voir la vidéo</a>
+      <ol class="info-steps">${v.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+    `).join('');
+  }
+  return `
+    <a class="info-video-link" href="${info.video}" target="_blank" rel="noopener">▶ Voir la vidéo</a>
+    <ol class="info-steps">${info.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+  `;
+}
+
+function openExerciseInfo(exName){
+  const info = EXERCISE_INFO[exName];
+  if (!info) return;
+  document.getElementById('infoSheetTitle').textContent = exName;
+  document.getElementById('infoSheetBody').innerHTML = renderExerciseInfoBody(info);
+  document.getElementById('exerciseInfoOverlay').classList.remove('hidden');
+}
+
+function closeExerciseInfo(){
+  document.getElementById('exerciseInfoOverlay').classList.add('hidden');
+}
+
+document.getElementById('infoCloseBtn').addEventListener('click', closeExerciseInfo);
+document.getElementById('exerciseInfoOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'exerciseInfoOverlay') closeExerciseInfo();
+});
 
 function getWeekFromCount(count){
   const nextIndex = count + 1;
@@ -521,9 +740,11 @@ async function renderExercises(){
     card.className = "ex-card";
     const last = await getLastLog(exName);
 
+    const hasInfo = !!EXERCISE_INFO[exName];
+
     card.innerHTML = `
       <div class="ex-head">
-        <div class="ex-name">${exName}</div>
+        <div class="ex-name">${exName}${hasInfo ? '<button type="button" class="ex-info-btn" aria-label="Instructions">ⓘ</button>' : ''}</div>
         <div class="ex-target">${currentMicro.reps} reps<br>repos ${currentMicro.rest}</div>
       </div>
       <div class="ex-inputs">
@@ -538,6 +759,8 @@ async function renderExercises(){
     const rInput = card.querySelector('.r-input');
     const saveBtn = card.querySelector('.ex-save');
     const flash = card.querySelector('.ex-saved-flash');
+    const infoBtn = card.querySelector('.ex-info-btn');
+    if (infoBtn) infoBtn.addEventListener('click', () => openExerciseInfo(exName));
 
     saveBtn.addEventListener('click', async () => {
       const poids = parseFloat(wInput.value);
