@@ -136,7 +136,6 @@
     flex-shrink:0; text-align:right; font-family:'JetBrains Mono',monospace;
     font-size:11px; color:var(--brass); white-space:nowrap;
   }
-  .ex-last{ font-size:11px; color:var(--muted); margin-top:4px; }
   .ex-inputs{ display:flex; gap:8px; margin-top:10px; }
   .ex-inputs .field{ flex:1; }
   .ex-inputs input{ padding:9px 10px; font-size:14px; }
@@ -480,13 +479,12 @@ function render(){
   }
 }
 
-async function getLastLog(exName, seance){
+async function getLastLog(exName){
   try{
     const { data, error } = await supabase
       .from('exercise_logs')
       .select('poids, reps, date, target_reps, target_rest')
       .eq('exercise_name', exName)
-      .eq('seance', seance)
       .order('date', { ascending: false })
       .order('created_at', { ascending: false })
       .limit(1)
@@ -521,20 +519,16 @@ async function renderExercises(){
   for(const exName of data.ex){
     const card = document.createElement('div');
     card.className = "ex-card";
-    const last = await getLastLog(exName, currentSeanceLetter);
-    const lastText = last
-      ? "Séance " + currentSeanceLetter + " précédente : " + last.poids + " kg × " + last.reps + " (objectif d'alors : " + last.target_reps + " reps · repos " + last.target_rest + ") — " + last.date
-      : "Pas encore de charge enregistrée pour cette séance";
+    const last = await getLastLog(exName);
 
     card.innerHTML = `
       <div class="ex-head">
         <div class="ex-name">${exName}</div>
         <div class="ex-target">${currentMicro.reps} reps<br>repos ${currentMicro.rest}</div>
       </div>
-      <div class="ex-last">${lastText}</div>
       <div class="ex-inputs">
-        <div class="field"><input type="number" placeholder="kg" class="w-input" inputmode="decimal"></div>
-        <div class="field"><input type="number" placeholder="reps" class="r-input" inputmode="numeric"></div>
+        <div class="field"><input type="number" placeholder="kg" class="w-input" inputmode="decimal" value="${last ? last.poids : ''}"></div>
+        <div class="field"><input type="number" placeholder="reps" class="r-input" inputmode="numeric" value="${last ? last.reps : ''}"></div>
         <button class="ex-save">Enregistrer</button>
       </div>
       <div class="ex-saved-flash">✓ Enregistré</div>
@@ -544,7 +538,6 @@ async function renderExercises(){
     const rInput = card.querySelector('.r-input');
     const saveBtn = card.querySelector('.ex-save');
     const flash = card.querySelector('.ex-saved-flash');
-    const lastLine = card.querySelector('.ex-last');
 
     saveBtn.addEventListener('click', async () => {
       const poids = parseFloat(wInput.value);
@@ -554,7 +547,6 @@ async function renderExercises(){
       const ok = await saveLog(exName, poids, reps, currentSeanceLetter, currentMicro.reps, currentMicro.rest);
       if(ok){
         flash.style.display = "block";
-        lastLine.textContent = "Séance " + currentSeanceLetter + " précédente : " + poids + " kg × " + reps + " (objectif d'alors : " + currentMicro.reps + " reps · repos " + currentMicro.rest + ") — aujourd'hui";
         setTimeout(() => { flash.style.display = "none"; }, 2000);
         startRestTimer(parseRestSeconds(currentMicro.rest));
       }
