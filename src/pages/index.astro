@@ -21,8 +21,7 @@
     --phase-over: #c15b3c;
     --ok: #7fa06a;
     --m-pecs: #c97a4e;
-    --m-biceps: #6f9c8f;
-    --m-triceps: #7a8fc9;
+    --m-bras: #6f9c8f;
     --m-abdos: #9e8fc9;
     --m-dos: #c96f8f;
   }
@@ -150,8 +149,7 @@
     padding:8px 10px; border-radius:20px; line-height:1;
   }
   .ex-muscle.pecs{ background:rgba(201,122,78,0.18); color:var(--m-pecs); }
-  .ex-muscle.biceps{ background:rgba(111,156,143,0.18); color:var(--m-biceps); }
-  .ex-muscle.triceps{ background:rgba(122,143,201,0.18); color:var(--m-triceps); }
+  .ex-muscle.bras{ background:rgba(111,156,143,0.18); color:var(--m-bras); }
   .ex-muscle.abdos{ background:rgba(158,143,201,0.18); color:var(--m-abdos); }
   .ex-muscle.dos{ background:rgba(201,111,143,0.18); color:var(--m-dos); }
   .ex-inputs{ display:flex; gap:8px; margin-top:10px; }
@@ -382,17 +380,17 @@ const MUSCLE_GROUP = {
   "Écarté poulie vis-à-vis, assis": "pecs",
   "Dips barres parallèles": "pecs",
   "Développé machine convergente": "pecs",
-  "Curl poulie basse": "biceps",
-  "Tractions supination": "biceps",
-  "Curl marteau": "biceps",
-  "Extensions trichées": "triceps",
-  "Dips triceps sur banc": "triceps",
+  "Curl poulie basse": "bras",
+  "Tractions supination": "bras",
+  "Curl marteau": "bras",
+  "Extensions trichées": "bras",
+  "Dips triceps sur banc": "bras",
   "Tirage vertical/Tractions (dos)": "dos",
   "Crunch poulie haute": "abdos",
   "Relevé de jambes suspendu": "abdos"
 };
 
-const MUSCLE_LABEL = { pecs:"Pecs", biceps:"Biceps", triceps:"Triceps", abdos:"Abdos", dos:"Dos" };
+const MUSCLE_LABEL = { pecs:"Pecs", bras:"Bras", abdos:"Abdos", dos:"Dos" };
 
 const EXERCISE_CATEGORY = {
   "Développé légèrement décliné": "principal",
