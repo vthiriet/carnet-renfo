@@ -4,13 +4,6 @@
 
 ## PECS
 
-### Développé couché barre
-**Vidéo** : exercice conservé du programme de base initial (Valentin) — mentionné par Nassim dans la vidéo pecs (https://www.youtube.com/watch?v=qq_bX5iw0HY&t=537s) comme "bon exercice" mais sans instructions détaillées de sa part (il précise juste que son efficacité dépend de la morphologie). Les étapes ci-dessous sont des repères d'exécution généraux, pas issus de la vidéo.
-1. Barre à hauteur du sternum
-2. Omoplates serrées et légèrement rétractées, pieds ancrés au sol
-3. Descente contrôlée jusqu'à effleurer la poitrine, coudes à 45-70° du corps (ni collés, ni à 90°)
-4. Remontée jusqu'à extension complète des bras
-
 ### Développé légèrement décliné (barre ou haltères)
 **Vidéo** : https://www.youtube.com/watch?v=qq_bX5iw0HY&t=437s
 1. Régler le banc avec un léger angle décliné (10-20°)
@@ -75,13 +68,6 @@
 3. Redescendre en contrôlant jusqu'à extension complète des bras
 4. Si tu ne tiens pas 10-12 reps propres, privilégie le curl poulie basse en attendant de progresser sur cet exercice
 
-### Curl incliné haltères
-**Vidéo** : https://www.youtube.com/watch?v=di2pTqQKdss&t=314s
-1. S'asseoir sur un banc incliné, dos bien callé, bras pendants de chaque côté
-2. Laisser les bras s'étirer complètement en bas du mouvement
-3. Fléchir les coudes pour remonter les haltères
-4. Ajuster l'angle du banc selon ta souplesse : plus redressé au début, plus incliné avec l'expérience
-
 ### Curl marteau
 **Vidéo** : "CURL MARTEAU : Comment avoir des biceps plus épais" — https://www.youtube.com/shorts/IAxKbIuoPKc
 1. Haltères en prise neutre (position "marteau", paume vers l'intérieur) — contrairement à la supination, cette prise désengage la longue et la courte portion du biceps pour aller chercher le brachial, le petit muscle qui donne de l'épaisseur au bras
@@ -125,3 +111,25 @@
 2. Tirer le corps vers le haut jusqu'au menton
 3. Redescendre en contrôlant jusqu'à extension complète
 4. Si la progression en charge est difficile au-delà d'un certain nombre de reps, ce n'est pas anormal — envisager une chaîne lestée si à l'aise
+
+---
+
+## Exercices écartés du programme
+
+Exercices retirés de la sélection active (priorisation selon le classement Nassim / réduction de la durée des séances), conservés ici pour référence en cas de futur programme.
+
+### Développé couché barre (pecs)
+**Pourquoi écarté** : n'appartient pas au classement Nassim — exercice conservé du programme de base initial (Valentin). Nassim le mentionne juste comme "bon exercice" sans le classer, et le développé décliné + les dips couvrent déjà les mouvements de poussée principaux pour les pecs.
+**Vidéo** : https://www.youtube.com/watch?v=qq_bX5iw0HY&t=537s (mention informelle, pas d'instructions détaillées de la part de Nassim)
+1. Barre à hauteur du sternum
+2. Omoplates serrées et légèrement rétractées, pieds ancrés au sol
+3. Descente contrôlée jusqu'à effleurer la poitrine, coudes à 45-70° du corps (ni collés, ni à 90°)
+4. Remontée jusqu'à extension complète des bras
+
+### Curl incliné haltères (biceps)
+**Pourquoi écarté** : ajouté à l'origine pour la tension d'étirement, mais hors des 2 exercices biceps prioritaires du classement Nassim (curl poulie basse + tractions supination), qui restent dans le programme.
+**Vidéo** : https://www.youtube.com/watch?v=di2pTqQKdss&t=314s
+1. S'asseoir sur un banc incliné, dos bien callé, bras pendants de chaque côté
+2. Laisser les bras s'étirer complètement en bas du mouvement
+3. Fléchir les coudes pour remonter les haltères
+4. Ajuster l'angle du banc selon ta souplesse : plus redressé au début, plus incliné avec l'expérience

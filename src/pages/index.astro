@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>Carnet de charge</title>
+<title>Carnet Renfo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style is:global>
@@ -20,6 +20,11 @@
     --phase-meta: #b3763f;
     --phase-over: #c15b3c;
     --ok: #7fa06a;
+    --m-pecs: #c97a4e;
+    --m-biceps: #6f9c8f;
+    --m-triceps: #7a8fc9;
+    --m-abdos: #9e8fc9;
+    --m-dos: #c96f8f;
   }
   *{ box-sizing: border-box; }
   html,body{
@@ -89,13 +94,12 @@
 
   /* Position dashboard */
   .position-card{ padding:16px 16px 18px; }
+  .meso-index{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
+  .meso-phase{ font-size:15px; font-weight:600; margin-top:2px; margin-bottom:14px; }
   .position-top{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:14px; }
   .week-label{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
   .week-num{ font-size:30px; font-weight:700; line-height:1; }
   .week-sub{ font-size:11px; color:var(--muted); margin-top:2px; }
-  .meso-name{ text-align:right; }
-  .meso-name .n{ font-size:15px; font-weight:600; }
-  .meso-name .r{ font-size:11px; color:var(--muted); }
 
   .bar{ display:flex; gap:2px; margin: 10px 0 8px; }
   .bar .seg{ flex:1; height:10px; border-radius:2px; background:var(--line); }
@@ -125,6 +129,7 @@
   }
   .next-banner .lbl{ font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
   .next-banner .val{ font-family:'Oswald',sans-serif; font-size:20px; font-weight:700; color:var(--brass); }
+  .next-duration{ font-size:11px; color:var(--muted); margin-top:3px; }
 
   .ex-card{
     background:var(--panel); border:1px solid var(--line); border-radius:10px;
@@ -136,6 +141,19 @@
     flex-shrink:0; text-align:right; font-family:'JetBrains Mono',monospace;
     font-size:11px; color:var(--brass); white-space:nowrap;
   }
+  .ex-sets-counter{ display:block; margin-top:4px; color:var(--text); font-weight:700; }
+
+  .ex-meta-row{ display:flex; align-items:center; gap:8px; margin-top:5px; }
+  .ex-muscle{
+    display:inline-flex; align-items:center; font-family:'Oswald',sans-serif;
+    font-size:9.5px; font-weight:600; text-transform:uppercase; letter-spacing:0.07em;
+    padding:8px 10px; border-radius:20px; line-height:1;
+  }
+  .ex-muscle.pecs{ background:rgba(201,122,78,0.18); color:var(--m-pecs); }
+  .ex-muscle.biceps{ background:rgba(111,156,143,0.18); color:var(--m-biceps); }
+  .ex-muscle.triceps{ background:rgba(122,143,201,0.18); color:var(--m-triceps); }
+  .ex-muscle.abdos{ background:rgba(158,143,201,0.18); color:var(--m-abdos); }
+  .ex-muscle.dos{ background:rgba(201,111,143,0.18); color:var(--m-dos); }
   .ex-inputs{ display:flex; gap:8px; margin-top:10px; }
   .ex-inputs .field{ flex:1; }
   .ex-inputs input{ padding:9px 10px; font-size:14px; }
@@ -147,6 +165,7 @@
   }
   .ex-save:active{ background:var(--brass-dim); }
   .ex-saved-flash{ font-size:11px; color:var(--ok); margin-top:6px; display:none; }
+  .ex-error-flash{ font-size:11px; color:var(--phase-over); margin-top:6px; display:none; }
 
   .validate-btn{
     width:100%; background: var(--ok); color:#12200e; border:none;
@@ -184,7 +203,7 @@
 
   .ex-info-btn{
     background:none; border:1px solid var(--line); color:var(--muted); border-radius:20px;
-    font-size:11px; line-height:1; cursor:pointer; margin-left:8px;
+    font-size:11px; line-height:1; cursor:pointer;
     display:inline-flex; align-items:center; justify-content:center; vertical-align:middle;
     padding:9px 12px; font-family:'Inter',sans-serif; letter-spacing:0.03em;
   }
@@ -220,8 +239,8 @@
 
 <header class="top">
   <div>
-    <h1>Carnet de charge</h1>
-    <div class="tag">PECS · BRAS · ABDOS</div>
+    <h1>Carnet Renfo</h1>
+    <div class="tag">MACROCYCLE : PECS · BRAS · ABDOS</div>
   </div>
   <button class="settings-btn" id="settingsBtn">Réglages</button>
 </header>
@@ -245,15 +264,14 @@
 <div id="mainApp">
 
   <div class="card position-card">
+    <div class="meso-index" id="mesoIndex">Mésocycle —</div>
+    <div class="meso-phase" id="mesoPhase">— — Semaines —</div>
+
     <div class="position-top">
       <div>
         <div class="week-label">Semaine</div>
         <div class="week-num num" id="weekNum">—</div>
         <div class="week-sub num" id="sessionCount">—</div>
-      </div>
-      <div class="meso-name">
-        <div class="n" id="mesoName">—</div>
-        <div class="r" id="mesoRange">—</div>
       </div>
     </div>
 
@@ -263,7 +281,7 @@
     <div class="micro-info">
       <div class="micro-dot" id="microDot"></div>
       <div class="micro-text">
-        <div class="n" id="microName">—</div>
+        <div class="n">Microcycle : <span id="microName">—</span> <button type="button" id="microInfoBtn" class="ex-info-btn">ⓘ Infos</button></div>
         <div class="d" id="microDetail">—</div>
       </div>
     </div>
@@ -275,6 +293,7 @@
       <div>
         <div class="lbl">Prochaine séance</div>
         <div class="val" id="nextSeanceLabel">—</div>
+        <div class="next-duration" id="nextSeanceDuration"></div>
       </div>
     </div>
 
@@ -316,35 +335,33 @@ import { supabase } from '../lib/supabase';
 
 const PROGRAM = [
   { name:"Force", start:1, end:8, micro:[
-    { key:"meca", name:"Stress mécanique", w:[1,3], reps:"6-8", rest:"2-3 min", note:"" },
+    { key:"meca", name:"Stress mécanique", w:[1,3], reps:"6-8", rest:"2 min 30", note:"" },
     { key:"meta", name:"Consolidation", w:[4,6], reps:"4-6", rest:"3 min", note:"" },
     { key:"over", name:"Overreaching", w:[7,8], reps:"4-6", rest:"3 min", note:"+1 série sur les mouvements principaux · rest-pause sur le dernier exercice · deload optionnel les 2-3 derniers jours si besoin" }
   ]},
   { name:"Prise de muscle", start:9, end:16, micro:[
-    { key:"meca", name:"Stress mécanique", w:[9,11], reps:"8-10", rest:"1min30-2min", note:"" },
-    { key:"meta", name:"Stress métabolique", w:[12,14], reps:"10-15", rest:"45sec-1min", note:"" },
-    { key:"over", name:"Overreaching", w:[15,16], reps:"10-15", rest:"45sec-1min", note:"+1 série · superset/drop set sur 1-2 exercices · deload optionnel les 2-3 derniers jours si besoin" }
+    { key:"meca", name:"Stress mécanique", w:[9,11], reps:"8-10", rest:"1 min 45", note:"" },
+    { key:"meta", name:"Stress métabolique", w:[12,14], reps:"10-15", rest:"1 min", note:"" },
+    { key:"over", name:"Overreaching", w:[15,16], reps:"10-15", rest:"1 min", note:"+1 série · superset/drop set sur 1-2 exercices · deload optionnel les 2-3 derniers jours si besoin" }
   ]},
   { name:"Perte de gras", start:17, end:24, micro:[
     { key:"meca", name:"Densité — phase 1", w:[17,19], reps:"10-15", rest:"1 min", note:"" },
     { key:"meta", name:"Densité — phase 2", w:[20,22], reps:"10-15", rest:"45 sec", note:"" },
-    { key:"over", name:"Densité maximale", w:[23,24], reps:"10-15", rest:"30-45 sec", note:"Fin de macrocycle — pas de deload nécessaire, moment de réévaluer le programme" }
+    { key:"over", name:"Densité maximale", w:[23,24], reps:"10-15", rest:"40 sec", note:"Fin de macrocycle — pas de deload nécessaire, moment de réévaluer le programme" }
   ]}
 ];
 
 const SEANCES = {
   A: { label:"Séance A : Pecs + Abdos", ex:[
-    "Développé couché barre",
     "Développé légèrement décliné",
     "Écarté poulie vis-à-vis, assis",
     "Dips barres parallèles",
     "Crunch poulie haute",
-    "Relevé de jambes"
+    "Relevé de jambes suspendu"
   ]},
   B: { label:"Séance B : Bras + Abdos", ex:[
     "Curl poulie basse",
     "Tractions supination",
-    "Curl incliné haltères",
     "Extensions trichées",
     "Dips triceps sur banc",
     "Crunch poulie haute",
@@ -356,20 +373,56 @@ const SEANCES = {
     "Dips triceps sur banc",
     "Tirage vertical/Tractions (dos)",
     "Crunch poulie haute",
-    "Relevé de jambes"
+    "Relevé de jambes suspendu"
   ]}
 };
 
+const MUSCLE_GROUP = {
+  "Développé légèrement décliné": "pecs",
+  "Écarté poulie vis-à-vis, assis": "pecs",
+  "Dips barres parallèles": "pecs",
+  "Développé machine convergente": "pecs",
+  "Curl poulie basse": "biceps",
+  "Tractions supination": "biceps",
+  "Curl marteau": "biceps",
+  "Extensions trichées": "triceps",
+  "Dips triceps sur banc": "triceps",
+  "Tirage vertical/Tractions (dos)": "dos",
+  "Crunch poulie haute": "abdos",
+  "Relevé de jambes suspendu": "abdos"
+};
+
+const MUSCLE_LABEL = { pecs:"Pecs", biceps:"Biceps", triceps:"Triceps", abdos:"Abdos", dos:"Dos" };
+
+const EXERCISE_CATEGORY = {
+  "Développé légèrement décliné": "principal",
+  "Écarté poulie vis-à-vis, assis": "isolation",
+  "Dips barres parallèles": "principal",
+  "Développé machine convergente": "principal",
+  "Curl poulie basse": "principal",
+  "Tractions supination": "principal",
+  "Curl marteau": "isolation",
+  "Extensions trichées": "isolation",
+  "Dips triceps sur banc": "isolation",
+  "Tirage vertical/Tractions (dos)": "dos",
+  "Crunch poulie haute": "abdo",
+  "Relevé de jambes suspendu": "abdo"
+};
+
+const SETS_BY_CATEGORY = {
+  principal: { base:4, over:5 },
+  isolation: { base:3, over:4 },
+  abdo: { base:3, over:4 },
+  dos: { base:3, over:3 }
+};
+
+function targetSets(exName, microKey){
+  const cat = EXERCISE_CATEGORY[exName];
+  const set = SETS_BY_CATEGORY[cat];
+  return microKey === "over" ? set.over : set.base;
+}
+
 const EXERCISE_INFO = {
-  "Développé couché barre": {
-    video: "https://www.youtube.com/watch?v=qq_bX5iw0HY&t=537s",
-    steps: [
-      "Barre à hauteur du sternum",
-      "Omoplates serrées et légèrement rétractées, pieds ancrés au sol",
-      "Descente contrôlée jusqu'à effleurer la poitrine, coudes à 45-70° du corps (ni collés, ni à 90°)",
-      "Remontée jusqu'à extension complète des bras"
-    ]
-  },
   "Développé légèrement décliné": {
     video: "https://www.youtube.com/watch?v=qq_bX5iw0HY&t=437s",
     steps: [
@@ -440,15 +493,6 @@ const EXERCISE_INFO = {
       "Tirer le corps vers le haut jusqu'à ce que le menton dépasse la barre",
       "Redescendre en contrôlant jusqu'à extension complète des bras",
       "Si tu ne tiens pas 10-12 reps propres, privilégie le curl poulie basse en attendant de progresser sur cet exercice"
-    ]
-  },
-  "Curl incliné haltères": {
-    video: "https://www.youtube.com/watch?v=di2pTqQKdss&t=314s",
-    steps: [
-      "S'asseoir sur un banc incliné, dos bien callé, bras pendants de chaque côté",
-      "Laisser les bras s'étirer complètement en bas du mouvement",
-      "Fléchir les coudes pour remonter les haltères",
-      "Ajuster l'angle du banc selon ta souplesse : plus redressé au début, plus incliné avec l'expérience"
     ]
   },
   "Curl marteau": {
@@ -534,6 +578,17 @@ function parseRestSeconds(restStr){
   return seconds === null ? 60 : seconds;
 }
 
+function estimateSessionSeconds(seanceLetter, micro){
+  const EXEC_PER_SET_SEC = 35;
+  const TRANSITION_PER_EXERCISE_SEC = 60;
+  const WARMUP_SEC = 300;
+  const data = SEANCES[seanceLetter];
+  const restSec = parseRestSeconds(micro.rest);
+  const totalSets = data.ex.reduce((s, exName) => s + targetSets(exName, micro.key), 0);
+  const nEx = data.ex.length;
+  return WARMUP_SEC + totalSets * EXEC_PER_SET_SEC + (totalSets - 1) * restSec + nEx * TRANSITION_PER_EXERCISE_SEC;
+}
+
 function playBeep(){
   try{
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -598,12 +653,16 @@ function renderExerciseInfoBody(info){
   `;
 }
 
+function showInfoSheet(title, bodyHtml){
+  document.getElementById('infoSheetTitle').textContent = title;
+  document.getElementById('infoSheetBody').innerHTML = bodyHtml;
+  document.getElementById('exerciseInfoOverlay').classList.remove('hidden');
+}
+
 function openExerciseInfo(exName){
   const info = EXERCISE_INFO[exName];
   if (!info) return;
-  document.getElementById('infoSheetTitle').textContent = exName;
-  document.getElementById('infoSheetBody').innerHTML = renderExerciseInfoBody(info);
-  document.getElementById('exerciseInfoOverlay').classList.remove('hidden');
+  showInfoSheet(exName, renderExerciseInfoBody(info));
 }
 
 function closeExerciseInfo(){
@@ -614,6 +673,35 @@ document.getElementById('infoCloseBtn').addEventListener('click', closeExerciseI
 document.getElementById('exerciseInfoOverlay').addEventListener('click', (e) => {
   if (e.target.id === 'exerciseInfoOverlay') closeExerciseInfo();
 });
+
+const MICRO_LEGEND = [
+  {
+    name:"Stress mécanique",
+    objectif:"Maximiser la tension mécanique sur le muscle pour stimuler la force et la construction musculaire.",
+    desc:"Répétitions courtes, récupérations longues, charges de travail élevées."
+  },
+  {
+    name:"Stress métabolique",
+    objectif:"Accumuler de la fatigue métabolique (\"la brûlure\") pour stimuler la croissance musculaire par une voie complémentaire à la tension pure.",
+    desc:"Répétitions longues, récupérations courtes, charges de travail modérées."
+  },
+  {
+    name:"Overreaching",
+    objectif:"Pousser volontairement le volume et l'intensité au maximum pour déclencher un stress suffisant avant récupération, et progresser par surcompensation.",
+    desc:"Plus de volume d'entraînement, plus d'intensité de travail, techniques d'intensification."
+  }
+];
+
+function openMicroLegend(){
+  const body = MICRO_LEGEND.map(m => `
+    <div class="info-variant-name">${m.name}</div>
+    <p style="margin:0 0 6px; font-size:13px; line-height:1.6;"><strong>Objectif</strong> : ${m.objectif}</p>
+    <p style="margin:0 0 4px; font-size:13px; line-height:1.6;"><strong>Concrètement</strong> : ${m.desc}</p>
+  `).join('');
+  showInfoSheet("Types de microcycle", body);
+}
+
+document.getElementById('microInfoBtn').addEventListener('click', openMicroLegend);
 
 function getWeekFromCount(count){
   const nextIndex = count + 1;
@@ -682,8 +770,8 @@ function render(){
 
   document.getElementById('weekNum').textContent = week + " / 24";
   document.getElementById('sessionCount').textContent = completedCount + " / " + TOTAL_SESSIONS + " séances validées";
-  document.getElementById('mesoName').textContent = pos.meso.name;
-  document.getElementById('mesoRange').textContent = "Semaines " + pos.meso.start + "–" + pos.meso.end;
+  document.getElementById('mesoIndex').textContent = "Mésocycle " + (PROGRAM.indexOf(pos.meso) + 1);
+  document.getElementById('mesoPhase').textContent = pos.meso.name + " — Semaines " + pos.meso.start + "–" + pos.meso.end;
 
   document.getElementById('microDot').className = "micro-dot " + pos.micro.key;
   document.getElementById('microName').textContent = pos.micro.name;
@@ -694,6 +782,8 @@ function render(){
 
   if (completedCount < TOTAL_SESSIONS){
     document.getElementById('nextSeanceLabel').textContent = SEANCES[currentSeanceLetter].label;
+    const estMin = Math.round(estimateSessionSeconds(currentSeanceLetter, pos.micro) / 60);
+    document.getElementById('nextSeanceDuration').textContent = "~" + estMin + " min estimées";
     renderExercises();
   }
 }
@@ -730,6 +820,20 @@ async function saveLog(exName, poids, reps, seance, targetReps, targetRest){
   }catch(e){ return false; }
 }
 
+async function getTodaySetCount(exName, seance){
+  try{
+    const today = new Date().toISOString().slice(0,10);
+    const { count, error } = await supabase
+      .from('exercise_logs')
+      .select('*', { count: 'exact', head: true })
+      .eq('exercise_name', exName)
+      .eq('seance', seance)
+      .eq('date', today);
+    if (error) return 0;
+    return count || 0;
+  }catch(e){ return 0; }
+}
+
 async function renderExercises(){
   const container = document.getElementById('exList');
   const data = SEANCES[currentSeanceLetter];
@@ -739,41 +843,59 @@ async function renderExercises(){
     const card = document.createElement('div');
     card.className = "ex-card";
     const last = await getLastLog(exName);
+    let doneSets = await getTodaySetCount(exName, currentSeanceLetter);
+    const goalSets = targetSets(exName, currentMicro.key);
+    const muscle = MUSCLE_GROUP[exName];
 
     const hasInfo = !!EXERCISE_INFO[exName];
 
     card.innerHTML = `
       <div class="ex-head">
-        <div class="ex-name">${exName}${hasInfo ? '<button type="button" class="ex-info-btn">ⓘ Infos</button>' : ''}</div>
-        <div class="ex-target">${currentMicro.reps} reps<br>repos ${currentMicro.rest}</div>
+        <div>
+          <div class="ex-name">${exName}</div>
+          <div class="ex-meta-row">
+            <span class="ex-muscle ${muscle}">${MUSCLE_LABEL[muscle]}</span>
+            ${hasInfo ? '<button type="button" class="ex-info-btn">ⓘ Infos</button>' : ''}
+          </div>
+        </div>
+        <div class="ex-target">${currentMicro.reps} reps<br>repos ${currentMicro.rest}<span class="ex-sets-counter">${doneSets}/${goalSets} séries</span></div>
       </div>
       <div class="ex-inputs">
         <div class="field"><input type="number" placeholder="kg" class="w-input" inputmode="decimal" value="${last ? last.poids : ''}"></div>
         <div class="field"><input type="number" placeholder="reps" class="r-input" inputmode="numeric" value="${last ? last.reps : ''}"></div>
-        <button class="ex-save">Enregistrer</button>
+        <button class="ex-save">✓ Fait</button>
       </div>
-      <div class="ex-saved-flash">✓ Enregistré</div>
+      <div class="ex-saved-flash">✓ Série enregistrée</div>
+      <div class="ex-error-flash">Valeurs manquantes</div>
     `;
 
     const wInput = card.querySelector('.w-input');
     const rInput = card.querySelector('.r-input');
     const saveBtn = card.querySelector('.ex-save');
     const flash = card.querySelector('.ex-saved-flash');
+    const errorFlash = card.querySelector('.ex-error-flash');
     const infoBtn = card.querySelector('.ex-info-btn');
+    const setsCounter = card.querySelector('.ex-sets-counter');
     if (infoBtn) infoBtn.addEventListener('click', () => openExerciseInfo(exName));
 
     saveBtn.addEventListener('click', async () => {
       const poids = parseFloat(wInput.value);
       const reps = parseInt(rInput.value, 10);
-      if(!poids || !reps) return;
+      if(!poids || !reps){
+        errorFlash.style.display = "block";
+        setTimeout(() => { errorFlash.style.display = "none"; }, 2000);
+        return;
+      }
       saveBtn.textContent = "...";
       const ok = await saveLog(exName, poids, reps, currentSeanceLetter, currentMicro.reps, currentMicro.rest);
       if(ok){
+        doneSets += 1;
+        setsCounter.textContent = doneSets + "/" + goalSets + " séries";
         flash.style.display = "block";
         setTimeout(() => { flash.style.display = "none"; }, 2000);
         startRestTimer(parseRestSeconds(currentMicro.rest));
       }
-      saveBtn.textContent = "Enregistrer";
+      saveBtn.textContent = "✓ Fait";
     });
 
     container.appendChild(card);

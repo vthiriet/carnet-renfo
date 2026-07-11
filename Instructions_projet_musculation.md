@@ -38,14 +38,13 @@ Les reps/charges/repos à appliquer à chaque exercice dépendent du mésocycle 
 **Échauffement (5 min)** : rotations d'épaules + quelques pompes légères
 
 **En salle** :
-- Développé couché barre
 - Développé légèrement décliné (barre ou haltères)
 - Écarté à la poulie vis-à-vis, assis (version stabilisée)
 - Dips aux barres parallèles
 
 *Note morphologie* : le développé incliné classique dépend de la morphologie (cage thoracique, sternum) — à alterner avec le décliné seulement si bien ressenti, sinon rester sur le décliné.
 
-**Bloc abdos** : Crunch à la poulie haute (lesté) + Relevé de jambes
+**Bloc abdos** : Crunch à la poulie haute (lesté) + Relevé de jambes suspendu (barre de traction)
 
 ### Séance B — Bras (Biceps / Triceps) + Abdos
 
@@ -54,11 +53,8 @@ Les reps/charges/repos à appliquer à chaque exercice dépendent du mésocycle 
 **En salle** :
 - Curl à la poulie basse (meilleur exercice biceps du classement)
 - Tractions supination (chin-ups — compound, 2e meilleur biceps)
-- Curl incliné haltères (tension d'étirement)
 - Extensions trichées (haltères — barre au front + pullover enchaînés, meilleur exercice triceps)
 - Dips triceps sur banc (disques sur les cuisses, 2e meilleur triceps)
-
-*Si le temps presse* (session vers 45 min) : priorise curl poulie basse + extensions trichées + dips banc, garde tractions/curl incliné pour les séances avec plus de marge.
 
 **Bloc abdos** : Crunch à la poulie haute + Relevé de jambes suspendu (barre de traction)
 

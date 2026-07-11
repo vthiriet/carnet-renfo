@@ -35,7 +35,7 @@ Chaque mésocycle (8 semaines) se découpe en **3 microcycles** avec une logique
 
 | Microcycle | Semaines (méso) | Semaines (macrocycle) | Reps | Repos | Charge |
 |---|---|---|---|---|---|
-| 1 — Stress mécanique | 1-3 | 1-3 | 6-8 | 2-3 min | Progressive, modérée à lourde |
+| 1 — Stress mécanique | 1-3 | 1-3 | 6-8 | 2-3 min (moyenne : 2 min 30) | Progressive, modérée à lourde |
 | 2 — Consolidation | 4-6 | 4-6 | 4-6 | 3 min | Proche du max, moins de séries pour préserver la récup |
 | 3 — Overreaching | 7-8 | 7-8 | 4-6 | 3 min | Max, +1 série sur les mouvements principaux, technique d'intensification (rest-pause) sur le dernier exercice de chaque séance |
 
@@ -51,9 +51,9 @@ Chaque mésocycle (8 semaines) se découpe en **3 microcycles** avec une logique
 
 | Microcycle | Semaines (méso) | Semaines (macrocycle) | Reps | Repos | Charge |
 |---|---|---|---|---|---|
-| 1 — Stress mécanique | 1-3 | 9-11 | 8-10 | 1min30-2min | Modérée à lourde |
-| 2 — Stress métabolique | 4-6 | 12-14 | 10-15 | 45sec-1min | Plus légère |
-| 3 — Overreaching | 7-8 | 15-16 | 10-15 | 45sec-1min | +1 série, superset ou drop set sur 1-2 exercices par séance |
+| 1 — Stress mécanique | 1-3 | 9-11 | 8-10 | 1min30-2min (moyenne : 1 min 45) | Modérée à lourde |
+| 2 — Stress métabolique | 4-6 | 12-14 | 10-15 | 45sec-1min (moyenne : 1 min) | Plus légère |
+| 3 — Overreaching | 7-8 | 15-16 | 10-15 | 45sec-1min (moyenne : 1 min) | +1 série, superset ou drop set sur 1-2 exercices par séance |
 
 **Deload (optionnel)** : mêmes principes qu'au mésocycle 1 — remplace les 2-3 derniers jours de la semaine 16 par un mini-deload si tu en ressens le besoin, sinon enchaîne directement sur le mésocycle 3.
 
@@ -71,7 +71,7 @@ Ici on ne change presque pas les reps/charges par rapport à la fin du mésocycl
 |---|---|---|---|---|---|
 | 1 | 1-3 | 17-19 | Identique fin méso 2 | 1 min | Identique fin méso 2 |
 | 2 | 4-6 | 20-22 | Identique | 45 sec | Identique, 1-2 exercices en superset |
-| 3 — Overreaching | 7-8 | 23-24 | Identique | 30-45 sec | Densité maximale |
+| 3 — Overreaching | 7-8 | 23-24 | Identique | 30-45 sec (moyenne : 40 sec) | Densité maximale |
 
 Pas de deload nécessaire en fin de ce mésocycle (sauf fatigue ressentie) — c'est la fin du macrocycle, moment de réévaluer entièrement objectifs et programme pour la suite.
 
@@ -87,19 +87,17 @@ Les tableaux ci-dessous donnent la liste d'exercices par séance. Applique les r
 
 **Échauffement (5 min)** : rotations d'épaules + quelques pompes légères
 
-**Exercices** : Développé couché barre · Développé légèrement décliné (barre ou haltères) · Écarté à la poulie vis-à-vis, assis · Dips aux barres parallèles
+**Exercices** : Développé légèrement décliné (barre ou haltères) · Écarté à la poulie vis-à-vis, assis · Dips aux barres parallèles
 
 *Note : le développé incliné classique dépend de ta morphologie — alterne avec le décliné si tu le sens bien, sinon reste sur le décliné.*
 
-**Bloc abdos** : Crunch à la poulie haute (lesté) + Relevé de jambes
+**Bloc abdos** : Crunch à la poulie haute (lesté) + Relevé de jambes suspendu (barre de traction)
 
 ### Séance B — Bras (Biceps / Triceps) + Abdos
 
 **Échauffement (5 min)** : rotations poignets/coudes
 
-**Exercices** : Curl à la poulie basse · Tractions supination · Curl incliné haltères · Extensions trichées (haltères) · Dips triceps sur banc (disques sur les cuisses)
-
-*Si le temps presse* : priorise curl poulie basse + extensions trichées + dips banc.
+**Exercices** : Curl à la poulie basse · Tractions supination · Extensions trichées (haltères) · Dips triceps sur banc (disques sur les cuisses)
 
 **Bloc abdos** : Crunch à la poulie haute + Relevé de jambes suspendu (barre de traction)
 
@@ -110,6 +108,29 @@ Les tableaux ci-dessous donnent la liste d'exercices par séance. Applique les r
 **Exercices** : Développé à la machine convergente ou écarté poulie assis (pecs) · Superset curl marteau + dips triceps sur banc · Tirage vertical prise supination ou tractions pronation *(dos, entretien seulement — 1 seul exercice)*
 
 **Bloc abdos** : identique aux séances A/B
+
+---
+
+## Nombre de séries par exercice
+
+Basé sur la vidéo de Nassim Sahili *"Le nombre de séries IDÉAL en musculation"* : le repère principal n'est pas le nombre de séries par exercice pris isolément, mais le **volume hebdomadaire par groupe musculaire** (16-20 séries/semaine/groupe est la référence historique), qu'on répartit ensuite sur les exercices de la semaine. Le second repère est la **gestion de la fatigue** : augmenter les séries tant que la performance (charge/reps) ne chute pas trop vite d'une série à l'autre, et s'arrêter juste avant que ça s'effondre. Nassim valide lui-même un défaut simple, "jamais une mauvaise idée de faire 4 séries par exercice", sans minimum ni maximum absolu.
+
+En appliquant cette logique à ce programme (3 séances/semaine) :
+
+| Catégorie | Séries (microcycles 1-2) | Séries (microcycle overreaching) | Exemples |
+|---|---|---|---|
+| Mouvement principal | 4 | 5 | Développé décliné, dips pecs, développé machine convergente, curl poulie basse, tractions supination |
+| Isolation | 3 | 4 | Écarté poulie, extensions trichées, dips triceps sur banc, curl marteau |
+| Abdos | 3 | 4 | Crunch poulie haute, relevé de jambes |
+| Dos (entretien) | 3 | 3 (pas de bonus) | Tirage vertical / tractions |
+
+Justification de la répartition :
+- **Mouvements principaux** : ce sont les exercices qui tolèrent le mieux la charge sur plusieurs séries avant que la performance ne s'effondre — ils reçoivent le volume plein.
+- **Isolation et abdos** : déjà entraînés à fréquence élevée dans la semaine (abdos 3x/semaine), donc le volume par séance reste modéré pour ne pas exploser le total hebdomadaire.
+- **Dos** : volontairement plafonné, cohérent avec son statut "entretien minimal" (pas un objectif en soi) — pas de bonus en overreaching.
+- Le **"+1 série" en overreaching**, déjà mentionné dans les tableaux mésocycle plus haut, correspond directement à ce barème (4→5 sur les principaux, 3→4 sur l'isolation/abdos).
+
+**Impact sur la durée de séance** : avec ce barème, les temps de repos ci-dessus et les exercices actuellement retenus (5 en séance A, 6 en B, 6 en C), une séance dure en moyenne **~54 min** sur l'ensemble du programme, avec un pic à **~101 min** pendant le mésocycle Force en overreaching (repos les plus longs + volume le plus élevé cumulés) — un compromis assumé pour respecter le classement Nassim plutôt que couper davantage dans les exercices.
 
 ---
 
