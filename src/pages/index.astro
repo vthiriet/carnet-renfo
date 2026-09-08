@@ -245,6 +245,14 @@
     font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; text-transform:uppercase;
     letter-spacing:0.03em; margin:0 0 14px;
   }
+  .bw-title-row{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:8px; }
+  .bw-title-row .bw-section-title{ margin:0; }
+  .bw-tour-badge{
+    flex-shrink:0; font-family:'Oswald',sans-serif; font-size:12px; font-weight:600;
+    color:var(--brass); text-transform:uppercase; letter-spacing:0.05em;
+    background:var(--panel-2); border:1px solid var(--brass-dim); border-radius:20px;
+    padding:5px 12px;
+  }
   .bw-block{
     background:var(--panel); border:1px solid var(--line); border-radius:10px;
     margin-bottom:10px; overflow:hidden;
@@ -361,8 +369,12 @@
 <div id="bodyweightSessionView" class="hidden">
   <button type="button" class="ghost bw-back-btn" id="bwSessionBackBtn">← Retour</button>
   <div class="card">
-    <h2 id="bwSessionTitle" class="bw-section-title"></h2>
-    <div class="bw-session-meta" id="bwSessionMeta"></div>
+    <div class="bw-title-row">
+      <h2 id="bwSessionTitle" class="bw-section-title"></h2>
+      <span class="bw-tour-badge" id="bwTourBadge">Tour 1</span>
+    </div>
+    <div class="bw-session-meta" id="bwSessionMetaSeries"></div>
+    <div class="bw-session-meta" id="bwSessionMetaTours"></div>
   </div>
   <div id="bwExerciseList"></div>
 </div>
@@ -605,7 +617,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Body rows": {
-    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0&t=52s",
     steps: [
       "Utiliser un support solide à tirer vers soi (deux chaises, un pack d'eau, ou tout objet assez lourd)",
       "Jambes pliées, une partie du poids du corps supportée par le support",
@@ -614,7 +626,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Pompes": {
-    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0&t=111s",
     steps: [
       "Mains posées sur des chaises si disponibles pour descendre plus profondément, sinon au sol",
       "Descendre en contrôlant, viser une amplitude complète",
@@ -622,7 +634,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Pompes piquées": {
-    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0&t=181s",
     steps: [
       "Position en \"V\" inversé, bassin haut, buste orienté vers les mains",
       "Garder le poids constamment sur les épaules, pas basculé vers les pieds",
@@ -631,7 +643,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Extensions de triceps au sol": {
-    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0&t=241s",
     steps: [
       "Position proche de la pompe, mains posées au sol",
       "Éloigner les mains de soi pour plus de facilité, les rapprocher pour plus de difficulté (plus de poids sur les triceps)",
@@ -639,7 +651,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Cosaques alternés": {
-    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0&t=304s",
     steps: [
       "Position large, transférer le poids d'un côté en pliant la jambe correspondante, l'autre jambe tendue",
       "Descendre à l'amplitude que tu peux gérer, progresser vers plus bas avec le temps",
@@ -647,7 +659,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Fentes alternées": {
-    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0&t=395s",
     steps: [
       "Descendre en fente jusqu'à ce que le genou touche ou frôle le sol, sans prendre appui dessus",
       "Adapter la profondeur à ton niveau",
@@ -655,7 +667,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Montées de hanches à une jambe": {
-    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0&t=490s",
     steps: [
       "Allongé sur le dos, une jambe levée, l'autre pied au sol",
       "Pousser le bassin vers le haut en contractant le fessier",
@@ -663,7 +675,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Montées de mollets": {
-    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0&t=560s",
     steps: [
       "Appui possible sur un mur ou un meuble pour l'équilibre",
       "Monter sur la pointe des pieds, une jambe à la fois",
@@ -671,14 +683,14 @@ const EXERCISE_INFO = {
     ]
   },
   "Gainage reach through": {
-    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0&t=600s",
     steps: [
       "Position de gainage (planche), un bras tendu qui vient chercher sous le corps de l'autre côté",
       "Alterner les côtés à chaque répétition"
     ]
   },
   "Bateau": {
-    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0&t=696s",
     steps: [
       "Équilibre sur le bassin, jambes et buste relevés",
       "Plier les jambes si besoin pour tenir la position plus facilement",
@@ -686,7 +698,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Dips": {
-    video: "https://www.youtube.com/watch?v=zK57ipDwkDg",
+    video: "https://www.youtube.com/watch?v=zK57ipDwkDg&t=130s",
     steps: [
       "Mains en appui sur un support (chaise, banc), bras vers l'arrière",
       "En remontant, tendre les bras et faire basculer le poids vers l'arrière des épaules",
@@ -694,7 +706,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Pompes diamant": {
-    video: "https://www.youtube.com/watch?v=zK57ipDwkDg",
+    video: "https://www.youtube.com/watch?v=zK57ipDwkDg&t=379s",
     steps: [
       "Mains rapprochées sous le buste, plus serrées que la largeur des épaules",
       "Plus les mains sont resserrées, plus les triceps travaillent",
@@ -702,7 +714,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Pompes explosives négatives": {
-    video: "https://www.youtube.com/watch?v=zK57ipDwkDg",
+    video: "https://www.youtube.com/watch?v=zK57ipDwkDg&t=301s",
     steps: [
       "Position de pompe classique",
       "Pousser le plus explosivement possible à la montée",
@@ -710,7 +722,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Twist russe": {
-    video: "https://www.youtube.com/watch?v=VAkPh40gS5M",
+    video: "https://www.youtube.com/watch?v=VAkPh40gS5M&t=703s",
     steps: [
       "Assis, buste légèrement penché en arrière, pieds décollés du sol (ou au sol si plus facile)",
       "Faire pivoter le buste d'un côté puis de l'autre, sans chercher une grande amplitude",
@@ -719,7 +731,7 @@ const EXERCISE_INFO = {
     ]
   },
   "Gainage côté": {
-    video: "https://www.youtube.com/watch?v=ZlVJ_aCDsAQ",
+    video: "https://www.youtube.com/watch?v=ZlVJ_aCDsAQ&t=180s",
     steps: [
       "Allongé sur le côté, appui sur l'avant-bras, corps aligné et tendu",
       "Se tenir aussi droit que possible, hanches décollées du sol",
@@ -732,13 +744,12 @@ const SEANCE_ORDER = ["A","B","C"];
 const TOTAL_SESSIONS = 72;
 
 const BW_REST_BETWEEN_EXERCISES = 30;
+const BW_REST_BETWEEN_TOURS = 90;
 const BW_EXEC_PER_REP_EXERCISE = 30;
 
 const BODYWEIGHT_SESSIONS = [
   {
     title: "Full-body A",
-    restBetweenTours: "1-2 min",
-    maxTours: 4,
     exercises: [
       { name: "Body rows", type: "reps", target: 8 },
       { name: "Pompes", type: "reps", target: 12 },
@@ -752,8 +763,6 @@ const BODYWEIGHT_SESSIONS = [
   },
   {
     title: "Full-body B",
-    restBetweenTours: "1-2 min",
-    maxTours: 4,
     exercises: [
       { name: "Body rows", type: "reps", target: 8 },
       { name: "Dips", type: "reps", target: 8 },
@@ -858,13 +867,12 @@ function startRestTimer(seconds, label, onComplete){
     if (remaining <= 0){
       clearInterval(restInterval);
       restInterval = null;
-      document.getElementById('restTimeLeft').textContent = "Terminé !";
       if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
       playBeep();
+      bar.classList.add('hidden');
       const cb = restOnComplete;
       restOnComplete = null;
       if (cb) cb();
-      setTimeout(() => bar.classList.add('hidden'), 3000);
       return;
     }
     updateRestDisplay(remaining);
@@ -910,6 +918,15 @@ document.getElementById('exerciseInfoOverlay').addEventListener('click', (e) => 
 
 let bwCurrentSession = null;
 let bwCurrentIndex = 0;
+let bwCurrentTour = 1;
+
+function formatMinSec(totalSeconds){
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  if (m === 0) return s + " sec";
+  if (s === 0) return m + " min";
+  return m + " min " + s;
+}
 
 function openBodyweightList(){
   stopRestTimer(false);
@@ -935,7 +952,7 @@ function renderBodyweightBlocks(){
         <button type="button" class="bw-block-header" data-idx="${i}">
           <div>
             <div class="bw-block-title">${session.title}</div>
-            <div class="bw-block-duration">~${estMin} min (1 tour) · jusqu'à ${session.maxTours} tours</div>
+            <div class="bw-block-duration">~${estMin} min (1 tour)</div>
           </div>
           <span class="bw-chevron">▾</span>
         </button>
@@ -962,11 +979,13 @@ function renderBodyweightBlocks(){
 function openBodyweightSession(session){
   bwCurrentSession = session;
   bwCurrentIndex = 0;
+  bwCurrentTour = 1;
   document.getElementById("bodyweightListView").classList.add("hidden");
   document.getElementById("bodyweightSessionView").classList.remove("hidden");
   document.getElementById("bwSessionTitle").textContent = session.title;
-  document.getElementById("bwSessionMeta").textContent =
-    "Repos entre séries : " + BW_REST_BETWEEN_EXERCISES + " sec · Repos entre tours : " + session.restBetweenTours + " · Jusqu'à " + session.maxTours + " tours";
+  document.getElementById("bwTourBadge").textContent = "Tour " + bwCurrentTour;
+  document.getElementById("bwSessionMetaSeries").textContent = "Repos entre séries : " + BW_REST_BETWEEN_EXERCISES + " sec";
+  document.getElementById("bwSessionMetaTours").textContent = "Repos : " + formatMinSec(BW_REST_BETWEEN_TOURS);
   renderBwExerciseList();
 }
 
@@ -1002,8 +1021,9 @@ function renderBwExerciseList(){
     `;
   }).join("") + (finished ? `
     <div class="card done-banner">
-      <div class="n">Séance terminée !</div>
+      <div class="n">Tour ${bwCurrentTour} terminé !</div>
       <p>Bien joué — relance un tour si tu veux prolonger, ou reviens plus tard.</p>
+      <button type="button" class="validate-btn" id="bwRestartTourBtn">🔁 Refaire un tour !</button>
     </div>
   ` : "");
 
@@ -1011,7 +1031,19 @@ function renderBwExerciseList(){
     btn.addEventListener("click", () => openExerciseInfo(btn.dataset.name));
   });
 
-  if (!finished) renderBwControls();
+  if (finished){
+    document.getElementById("bwRestartTourBtn").addEventListener("click", restartBwTour);
+  } else {
+    renderBwControls();
+  }
+}
+
+function restartBwTour(){
+  bwCurrentTour += 1;
+  bwCurrentIndex = 0;
+  document.getElementById("bwTourBadge").textContent = "Tour " + bwCurrentTour;
+  document.getElementById("bwExerciseList").innerHTML = "";
+  startRestTimer(BW_REST_BETWEEN_TOURS, "Repos", renderBwExerciseList);
 }
 
 function onBwExerciseActionDone(){
