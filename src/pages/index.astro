@@ -245,6 +245,7 @@
     font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; text-transform:uppercase;
     letter-spacing:0.03em; margin:0 0 14px;
   }
+  .bw-session-header{ background:var(--panel-2); border-color:var(--brass-dim); }
   .bw-title-row{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:8px; }
   .bw-title-row .bw-section-title{ margin:0; }
   .bw-tour-badge{
@@ -368,7 +369,7 @@
 
 <div id="bodyweightSessionView" class="hidden">
   <button type="button" class="ghost bw-back-btn" id="bwSessionBackBtn">← Retour</button>
-  <div class="card">
+  <div class="card bw-session-header">
     <div class="bw-title-row">
       <h2 id="bwSessionTitle" class="bw-section-title"></h2>
       <span class="bw-tour-badge" id="bwTourBadge">Tour 1</span>
