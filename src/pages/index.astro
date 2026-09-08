@@ -231,6 +231,48 @@
     text-transform:uppercase; letter-spacing:0.05em; margin:16px 0 8px;
   }
   .info-variant-name:first-child{ margin-top:0; }
+
+  /* Bodyweight sessions */
+  .bodyweight-btn{
+    width:100%; background:var(--panel-2); border:1px solid var(--brass-dim); color:var(--brass);
+    font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.05em;
+    font-weight:600; font-size:13px; padding:12px; border-radius:9px; margin-bottom:14px;
+    cursor:pointer;
+  }
+  .bodyweight-btn:active{ background:var(--panel); }
+  .bw-back-btn{ margin-bottom:14px; }
+  .bw-section-title{
+    font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.03em; margin:0 0 14px;
+  }
+  .bw-block{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    margin-bottom:10px; overflow:hidden;
+  }
+  .bw-block-header{
+    width:100%; background:none; border:none; color:var(--text); cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center; padding:14px 16px;
+    text-align:left; font-family:'Inter',sans-serif;
+  }
+  .bw-block-title{ font-family:'Oswald',sans-serif; font-size:14px; font-weight:600; }
+  .bw-block-duration{ font-size:11px; color:var(--muted); margin-top:2px; }
+  .bw-chevron{ color:var(--muted); flex-shrink:0; margin-left:10px; }
+  .bw-block-body{ padding:0 16px 16px; }
+  .bw-preview-list{ margin:0 0 12px; padding-left:20px; font-size:12.5px; color:var(--muted); line-height:1.7; }
+  .bw-session-meta{ font-size:12px; color:var(--muted); line-height:1.6; }
+  .bw-exercise-row{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:14px; margin-bottom:10px; opacity:0.55;
+  }
+  .bw-exercise-row.current{ opacity:1; border-color:var(--brass); }
+  .bw-exercise-row.done{ opacity:0.35; }
+  .bw-ex-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .bw-ex-target{
+    flex-shrink:0; text-align:right; font-family:'JetBrains Mono',monospace;
+    font-size:12px; color:var(--brass); white-space:nowrap;
+  }
+  .bw-ex-controls{ margin-top:12px; }
+  .bw-action-btn{ margin:0; }
 </style>
 </head>
 <body>
@@ -242,6 +284,8 @@
   </div>
   <button class="settings-btn" id="settingsBtn">Réglages</button>
 </header>
+
+<button class="bodyweight-btn" id="bodyweightBtn">Séance poids du corps</button>
 
 <div id="settingsPanel" class="card hidden">
   <h3 style="font-size:14px;">Réglages du compteur</h3>
@@ -308,11 +352,26 @@
 
 </div>
 
+<div id="bodyweightListView" class="hidden">
+  <button type="button" class="ghost bw-back-btn" id="bwListBackBtn">← Retour</button>
+  <h2 class="bw-section-title">Séance poids du corps</h2>
+  <div id="bwSessionBlocks"></div>
+</div>
+
+<div id="bodyweightSessionView" class="hidden">
+  <button type="button" class="ghost bw-back-btn" id="bwSessionBackBtn">← Retour</button>
+  <div class="card">
+    <h2 id="bwSessionTitle" class="bw-section-title"></h2>
+    <div class="bw-session-meta" id="bwSessionMeta"></div>
+  </div>
+  <div id="bwExerciseList"></div>
+</div>
+
 <div class="footer-note">Reps/repos affichés = ceux du microcycle en cours.<br>Dernière charge affichée sous chaque exercice.</div>
 
 <div id="restTimer" class="rest-timer hidden">
   <div>
-    <div class="rest-label">Repos</div>
+    <div class="rest-label" id="restLabel">Repos</div>
     <div class="rest-time" id="restTimeLeft">--:--</div>
   </div>
   <button class="rest-skip" id="restSkipBtn">Passer</button>
@@ -544,11 +603,178 @@ const EXERCISE_INFO = {
         ]
       }
     ]
+  },
+  "Body rows": {
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    steps: [
+      "Utiliser un support solide à tirer vers soi (deux chaises, un pack d'eau, ou tout objet assez lourd)",
+      "Jambes pliées, une partie du poids du corps supportée par le support",
+      "Viser une grande amplitude de mouvement, pas de petits mouvements",
+      "Choisir une charge/inclinaison qui rend la dernière répétition vraiment difficile"
+    ]
+  },
+  "Pompes": {
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    steps: [
+      "Mains posées sur des chaises si disponibles pour descendre plus profondément, sinon au sol",
+      "Descendre en contrôlant, viser une amplitude complète",
+      "Possible sur les genoux pour les débutants, en gardant l'amplitude complète plutôt qu'une demi-amplitude sur les pieds"
+    ]
+  },
+  "Pompes piquées": {
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    steps: [
+      "Position en \"V\" inversé, bassin haut, buste orienté vers les mains",
+      "Garder le poids constamment sur les épaules, pas basculé vers les pieds",
+      "Les pieds ne décollent pas du sol (sauf niveau avancé)",
+      "Possible sur les genoux pour réduire la difficulté"
+    ]
+  },
+  "Extensions de triceps au sol": {
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    steps: [
+      "Position proche de la pompe, mains posées au sol",
+      "Éloigner les mains de soi pour plus de facilité, les rapprocher pour plus de difficulté (plus de poids sur les triceps)",
+      "Possible à genoux pour réduire la difficulté"
+    ]
+  },
+  "Cosaques alternés": {
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    steps: [
+      "Position large, transférer le poids d'un côté en pliant la jambe correspondante, l'autre jambe tendue",
+      "Descendre à l'amplitude que tu peux gérer, progresser vers plus bas avec le temps",
+      "Alterner les côtés"
+    ]
+  },
+  "Fentes alternées": {
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    steps: [
+      "Descendre en fente jusqu'à ce que le genou touche ou frôle le sol, sans prendre appui dessus",
+      "Adapter la profondeur à ton niveau",
+      "Alterner les jambes"
+    ]
+  },
+  "Montées de hanches à une jambe": {
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    steps: [
+      "Allongé sur le dos, une jambe levée, l'autre pied au sol",
+      "Pousser le bassin vers le haut en contractant le fessier",
+      "Éviter de s'appuyer sur les bras — seul le fessier doit travailler"
+    ]
+  },
+  "Montées de mollets": {
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    steps: [
+      "Appui possible sur un mur ou un meuble pour l'équilibre",
+      "Monter sur la pointe des pieds, une jambe à la fois",
+      "Monter le plus haut possible — l'amplitude prime sur la vitesse d'exécution"
+    ]
+  },
+  "Gainage reach through": {
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    steps: [
+      "Position de gainage (planche), un bras tendu qui vient chercher sous le corps de l'autre côté",
+      "Alterner les côtés à chaque répétition"
+    ]
+  },
+  "Bateau": {
+    video: "https://www.youtube.com/watch?v=HXTeIFQGtd0",
+    steps: [
+      "Équilibre sur le bassin, jambes et buste relevés",
+      "Plier les jambes si besoin pour tenir la position plus facilement",
+      "Contracter les abdos au maximum pendant toute la durée"
+    ]
+  },
+  "Dips": {
+    video: "https://www.youtube.com/watch?v=zK57ipDwkDg",
+    steps: [
+      "Mains en appui sur un support (chaise, banc), bras vers l'arrière",
+      "En remontant, tendre les bras et faire basculer le poids vers l'arrière des épaules",
+      "Enrouler l'épaule en arrière pour bien cibler l'arrière des épaules et les triceps"
+    ]
+  },
+  "Pompes diamant": {
+    video: "https://www.youtube.com/watch?v=zK57ipDwkDg",
+    steps: [
+      "Mains rapprochées sous le buste, plus serrées que la largeur des épaules",
+      "Plus les mains sont resserrées, plus les triceps travaillent",
+      "Resserrer progressivement les mains au fil de la progression"
+    ]
+  },
+  "Pompes explosives négatives": {
+    video: "https://www.youtube.com/watch?v=zK57ipDwkDg",
+    steps: [
+      "Position de pompe classique",
+      "Pousser le plus explosivement possible à la montée",
+      "Contrôler et ralentir la descente"
+    ]
+  },
+  "Twist russe": {
+    video: "https://www.youtube.com/watch?v=VAkPh40gS5M",
+    steps: [
+      "Assis, buste légèrement penché en arrière, pieds décollés du sol (ou au sol si plus facile)",
+      "Faire pivoter le buste d'un côté puis de l'autre, sans chercher une grande amplitude",
+      "Se concentrer sur l'intensité de la contraction plutôt que sur l'amplitude",
+      "Plier les genoux si nécessaire pour rendre l'exercice plus accessible"
+    ]
+  },
+  "Gainage côté": {
+    video: "https://www.youtube.com/watch?v=ZlVJ_aCDsAQ",
+    steps: [
+      "Allongé sur le côté, appui sur l'avant-bras, corps aligné et tendu",
+      "Se tenir aussi droit que possible, hanches décollées du sol",
+      "Tenir la position, puis changer de côté"
+    ]
   }
 };
 
 const SEANCE_ORDER = ["A","B","C"];
 const TOTAL_SESSIONS = 72;
+
+const BW_REST_BETWEEN_EXERCISES = 30;
+const BW_EXEC_PER_REP_EXERCISE = 30;
+
+const BODYWEIGHT_SESSIONS = [
+  {
+    title: "Full-body A",
+    restBetweenTours: "1-2 min",
+    maxTours: 4,
+    exercises: [
+      { name: "Body rows", type: "reps", target: 8 },
+      { name: "Pompes", type: "reps", target: 12 },
+      { name: "Pompes piquées", type: "reps", target: 10 },
+      { name: "Extensions de triceps au sol", type: "reps", target: 10 },
+      { name: "Cosaques alternés", type: "reps", target: 20 },
+      { name: "Fentes alternées", type: "reps", target: 20 },
+      { name: "Gainage reach through", type: "reps", target: 20 },
+      { name: "Bateau", type: "hold", target: 40 }
+    ]
+  },
+  {
+    title: "Full-body B",
+    restBetweenTours: "1-2 min",
+    maxTours: 4,
+    exercises: [
+      { name: "Body rows", type: "reps", target: 8 },
+      { name: "Dips", type: "reps", target: 8 },
+      { name: "Pompes diamant", type: "reps", target: 10 },
+      { name: "Pompes explosives négatives", type: "reps", target: 10 },
+      { name: "Montées de hanches à une jambe", type: "reps", target: 10 },
+      { name: "Montées de mollets", type: "reps", target: 10 },
+      { name: "Twist russe", type: "hold", target: 40 },
+      { name: "Gainage côté", type: "hold", target: 40 }
+    ]
+  }
+];
+
+function estimateBodyweightSessionSeconds(session){
+  let total = 0;
+  session.exercises.forEach((ex, i) => {
+    total += ex.type === "hold" ? ex.target : BW_EXEC_PER_REP_EXERCISE;
+    if (i < session.exercises.length - 1) total += BW_REST_BETWEEN_EXERCISES;
+  });
+  return total;
+}
 
 let completedCount = 0;
 let currentMicro = null;
@@ -609,13 +835,20 @@ function updateRestDisplay(remaining){
   document.getElementById('restTimeLeft').textContent = m + ":" + String(s).padStart(2, '0');
 }
 
-function stopRestTimer(){
+let restOnComplete = null;
+
+function stopRestTimer(triggerCallback){
   if (restInterval){ clearInterval(restInterval); restInterval = null; }
   document.getElementById('restTimer').classList.add('hidden');
+  const cb = restOnComplete;
+  restOnComplete = null;
+  if (triggerCallback && cb) cb();
 }
 
-function startRestTimer(seconds){
-  stopRestTimer();
+function startRestTimer(seconds, label, onComplete){
+  stopRestTimer(false);
+  document.getElementById('restLabel').textContent = label || "Repos";
+  restOnComplete = onComplete || null;
   let remaining = seconds;
   const bar = document.getElementById('restTimer');
   bar.classList.remove('hidden');
@@ -628,6 +861,9 @@ function startRestTimer(seconds){
       document.getElementById('restTimeLeft').textContent = "Terminé !";
       if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
       playBeep();
+      const cb = restOnComplete;
+      restOnComplete = null;
+      if (cb) cb();
       setTimeout(() => bar.classList.add('hidden'), 3000);
       return;
     }
@@ -635,7 +871,7 @@ function startRestTimer(seconds){
   }, 1000);
 }
 
-document.getElementById('restSkipBtn').addEventListener('click', stopRestTimer);
+document.getElementById('restSkipBtn').addEventListener('click', () => stopRestTimer(true));
 
 function renderExerciseInfoBody(info){
   if (info.variants){
@@ -671,6 +907,148 @@ document.getElementById('infoCloseBtn').addEventListener('click', closeExerciseI
 document.getElementById('exerciseInfoOverlay').addEventListener('click', (e) => {
   if (e.target.id === 'exerciseInfoOverlay') closeExerciseInfo();
 });
+
+let bwCurrentSession = null;
+let bwCurrentIndex = 0;
+
+function openBodyweightList(){
+  stopRestTimer(false);
+  document.getElementById('bodyweightBtn').classList.add('hidden');
+  document.getElementById('mainApp').classList.add('hidden');
+  document.getElementById('bodyweightSessionView').classList.add('hidden');
+  document.getElementById('bodyweightListView').classList.remove('hidden');
+  renderBodyweightBlocks();
+}
+
+function closeBodyweightList(){
+  document.getElementById('bodyweightListView').classList.add('hidden');
+  document.getElementById('bodyweightBtn').classList.remove('hidden');
+  document.getElementById('mainApp').classList.remove('hidden');
+}
+
+function renderBodyweightBlocks(){
+  const container = document.getElementById('bwSessionBlocks');
+  container.innerHTML = BODYWEIGHT_SESSIONS.map((session, i) => {
+    const estMin = Math.round(estimateBodyweightSessionSeconds(session) / 60);
+    return `
+      <div class="bw-block">
+        <button type="button" class="bw-block-header" data-idx="${i}">
+          <div>
+            <div class="bw-block-title">${session.title}</div>
+            <div class="bw-block-duration">~${estMin} min (1 tour) · jusqu'à ${session.maxTours} tours</div>
+          </div>
+          <span class="bw-chevron">▾</span>
+        </button>
+        <div class="bw-block-body hidden" id="bwBlockBody${i}">
+          <ul class="bw-preview-list">
+            ${session.exercises.map(ex => `<li>${ex.name} — ${ex.type === "hold" ? ex.target + " sec" : ex.target + " reps"}</li>`).join("")}
+          </ul>
+          <button type="button" class="primary bw-choose-btn" data-idx="${i}">Choisir cette séance</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  container.querySelectorAll(".bw-block-header").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.getElementById("bwBlockBody" + btn.dataset.idx).classList.toggle("hidden");
+    });
+  });
+  container.querySelectorAll(".bw-choose-btn").forEach(btn => {
+    btn.addEventListener("click", () => openBodyweightSession(BODYWEIGHT_SESSIONS[btn.dataset.idx]));
+  });
+}
+
+function openBodyweightSession(session){
+  bwCurrentSession = session;
+  bwCurrentIndex = 0;
+  document.getElementById("bodyweightListView").classList.add("hidden");
+  document.getElementById("bodyweightSessionView").classList.remove("hidden");
+  document.getElementById("bwSessionTitle").textContent = session.title;
+  document.getElementById("bwSessionMeta").textContent =
+    "Repos entre séries : " + BW_REST_BETWEEN_EXERCISES + " sec · Repos entre tours : " + session.restBetweenTours + " · Jusqu'à " + session.maxTours + " tours";
+  renderBwExerciseList();
+}
+
+function closeBodyweightSession(){
+  stopRestTimer(false);
+  document.getElementById("bodyweightSessionView").classList.add("hidden");
+  document.getElementById("bodyweightListView").classList.remove("hidden");
+}
+
+function renderBwExerciseList(){
+  const container = document.getElementById("bwExerciseList");
+  const session = bwCurrentSession;
+  const finished = bwCurrentIndex >= session.exercises.length;
+
+  container.innerHTML = session.exercises.map((ex, i) => {
+    const hasInfo = !!EXERCISE_INFO[ex.name];
+    const isCurrent = i === bwCurrentIndex;
+    const isDone = i < bwCurrentIndex;
+    const targetText = ex.type === "hold" ? ex.target + " sec (tenue)" : ex.target + " reps";
+    return `
+      <div class="bw-exercise-row ${isCurrent ? "current" : ""} ${isDone ? "done" : ""}">
+        <div class="bw-ex-head">
+          <div>
+            <div class="ex-name">${ex.name}</div>
+            <div class="ex-meta-row">
+              ${hasInfo ? `<button type="button" class="ex-info-btn" data-name="${ex.name}">ⓘ Infos</button>` : ""}
+            </div>
+          </div>
+          <div class="bw-ex-target">${targetText}</div>
+        </div>
+        ${isCurrent ? '<div class="bw-ex-controls" id="bwExControls"></div>' : ""}
+      </div>
+    `;
+  }).join("") + (finished ? `
+    <div class="card done-banner">
+      <div class="n">Séance terminée !</div>
+      <p>Bien joué — relance un tour si tu veux prolonger, ou reviens plus tard.</p>
+    </div>
+  ` : "");
+
+  container.querySelectorAll(".ex-info-btn").forEach(btn => {
+    btn.addEventListener("click", () => openExerciseInfo(btn.dataset.name));
+  });
+
+  if (!finished) renderBwControls();
+}
+
+function onBwExerciseActionDone(){
+  const isLast = bwCurrentIndex === bwCurrentSession.exercises.length - 1;
+  if (isLast){
+    bwCurrentIndex += 1;
+    renderBwExerciseList();
+  } else {
+    startRestTimer(BW_REST_BETWEEN_EXERCISES, "Repos", () => {
+      bwCurrentIndex += 1;
+      renderBwExerciseList();
+    });
+  }
+}
+
+function renderBwControls(){
+  const controls = document.getElementById("bwExControls");
+  if (!controls) return;
+  const ex = bwCurrentSession.exercises[bwCurrentIndex];
+  if (ex.type === "hold"){
+    controls.innerHTML = `<button type="button" class="validate-btn bw-action-btn">▶ Démarrer (${ex.target}s)</button>`;
+    controls.querySelector(".bw-action-btn").addEventListener("click", () => {
+      controls.innerHTML = "";
+      startRestTimer(ex.target, "Effort", onBwExerciseActionDone);
+    });
+  } else {
+    controls.innerHTML = `<button type="button" class="validate-btn bw-action-btn">✓ Série terminée</button>`;
+    controls.querySelector(".bw-action-btn").addEventListener("click", () => {
+      controls.innerHTML = "";
+      onBwExerciseActionDone();
+    });
+  }
+}
+
+document.getElementById("bodyweightBtn").addEventListener("click", openBodyweightList);
+document.getElementById("bwListBackBtn").addEventListener("click", closeBodyweightList);
+document.getElementById("bwSessionBackBtn").addEventListener("click", closeBodyweightSession);
 
 const MICRO_LEGEND = [
   {
