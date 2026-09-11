@@ -134,7 +134,19 @@
     background:var(--panel); border:1px solid var(--line); border-radius:10px;
     padding:14px; margin-bottom:10px;
   }
+  .ex-card.current{ border-color:var(--brass); transform:scale(1.015); }
+  .ex-card.done{ border-color:var(--ok); opacity:0.55; }
+  .ex-card.done .ex-name{ color:var(--ok); }
   .ex-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .ex-head-right{ display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0; }
+  .ex-reorder{ display:flex; gap:4px; }
+  .ex-reorder-btn{
+    background:none; border:1px solid var(--line); color:var(--muted); border-radius:6px;
+    width:26px; height:26px; font-size:11px; line-height:1; cursor:pointer; padding:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .ex-reorder-btn:active{ background:var(--panel-2); }
+  .ex-reorder-btn:disabled{ opacity:0.25; cursor:default; }
   .ex-name{ font-size:14.5px; font-weight:600; line-height:1.3; }
   .ex-target{
     flex-shrink:0; text-align:right; font-family:'JetBrains Mono',monospace;
@@ -464,6 +476,8 @@ const MUSCLE_GROUP = {
 
 const MUSCLE_LABEL = { pecs:"Pecs", bras:"Bras", abdos:"Abdos", dos:"Dos" };
 
+const NO_LOAD_EXERCISES = new Set(["Relevé de jambes suspendu"]);
+
 const EXERCISE_CATEGORY = {
   "Développé légèrement décliné": "principal",
   "Écarté poulie vis-à-vis, assis": "isolation",
@@ -789,6 +803,7 @@ function estimateBodyweightSessionSeconds(session){
 let completedCount = 0;
 let currentMicro = null;
 let currentSeanceLetter = "A";
+let currentExOrder = [];
 let restInterval = null;
 
 function parseRestSeconds(restStr){
@@ -1176,6 +1191,7 @@ function render(){
 
   const nextIndex = completedCount + 1;
   currentSeanceLetter = SEANCE_ORDER[(nextIndex - 1) % 3];
+  currentExOrder = [...SEANCES[currentSeanceLetter].ex];
 
   document.getElementById('weekNum').textContent = week + " / 24";
   document.getElementById('sessionCount').textContent = completedCount + " / " + TOTAL_SESSIONS + " séances validées";
@@ -1245,16 +1261,25 @@ async function getTodaySetCount(exName, seance){
 
 async function renderExercises(){
   const container = document.getElementById('exList');
-  const data = SEANCES[currentSeanceLetter];
   container.innerHTML = "";
+  let currentAssigned = false;
 
-  for(const exName of data.ex){
+  for(let idx = 0; idx < currentExOrder.length; idx++){
+    const exName = currentExOrder[idx];
     const card = document.createElement('div');
     card.className = "ex-card";
     const last = await getLastLog(exName);
     let doneSets = await getTodaySetCount(exName, currentSeanceLetter);
     const goalSets = targetSets(exName, currentMicro.key);
     const muscle = MUSCLE_GROUP[exName];
+    const noLoad = NO_LOAD_EXERCISES.has(exName);
+
+    if (doneSets >= goalSets){
+      card.classList.add('done');
+    } else if (!currentAssigned){
+      card.classList.add('current');
+      currentAssigned = true;
+    }
 
     const hasInfo = !!EXERCISE_INFO[exName];
 
@@ -1267,10 +1292,16 @@ async function renderExercises(){
             ${hasInfo ? '<button type="button" class="ex-info-btn">ⓘ Infos</button>' : ''}
           </div>
         </div>
-        <div class="ex-target">${currentMicro.reps} reps<br>repos ${currentMicro.rest}<span class="ex-sets-counter">${doneSets}/${goalSets} séries</span></div>
+        <div class="ex-head-right">
+          <div class="ex-reorder">
+            <button type="button" class="ex-reorder-btn" data-dir="up" aria-label="Monter" ${idx === 0 ? 'disabled' : ''}>▲</button>
+            <button type="button" class="ex-reorder-btn" data-dir="down" aria-label="Descendre" ${idx === currentExOrder.length - 1 ? 'disabled' : ''}>▼</button>
+          </div>
+          <div class="ex-target">${currentMicro.reps} reps<br>repos ${currentMicro.rest}<span class="ex-sets-counter">${doneSets}/${goalSets} séries</span></div>
+        </div>
       </div>
       <div class="ex-inputs">
-        <div class="field"><input type="number" placeholder="kg" class="w-input" inputmode="decimal" value="${last ? last.poids : ''}"></div>
+        ${noLoad ? '' : `<div class="field"><input type="number" placeholder="kg" class="w-input" inputmode="decimal" value="${last ? last.poids : ''}"></div>`}
         <div class="field"><input type="number" placeholder="reps" class="r-input" inputmode="numeric" value="${last ? last.reps : ''}"></div>
         <button class="ex-save">✓ Fait</button>
       </div>
@@ -1285,12 +1316,25 @@ async function renderExercises(){
     const errorFlash = card.querySelector('.ex-error-flash');
     const infoBtn = card.querySelector('.ex-info-btn');
     const setsCounter = card.querySelector('.ex-sets-counter');
+    const upBtn = card.querySelector('.ex-reorder-btn[data-dir="up"]');
+    const downBtn = card.querySelector('.ex-reorder-btn[data-dir="down"]');
     if (infoBtn) infoBtn.addEventListener('click', () => openExerciseInfo(exName));
 
+    upBtn.addEventListener('click', async () => {
+      if (idx === 0) return;
+      [currentExOrder[idx - 1], currentExOrder[idx]] = [currentExOrder[idx], currentExOrder[idx - 1]];
+      await renderExercises();
+    });
+    downBtn.addEventListener('click', async () => {
+      if (idx === currentExOrder.length - 1) return;
+      [currentExOrder[idx + 1], currentExOrder[idx]] = [currentExOrder[idx], currentExOrder[idx + 1]];
+      await renderExercises();
+    });
+
     saveBtn.addEventListener('click', async () => {
-      const poids = parseFloat(wInput.value);
+      const poids = noLoad ? 0 : parseFloat(wInput.value);
       const reps = parseInt(rInput.value, 10);
-      if(!poids || !reps){
+      if(!reps || (!noLoad && !poids)){
         errorFlash.style.display = "block";
         setTimeout(() => { errorFlash.style.display = "none"; }, 2000);
         return;
@@ -1302,7 +1346,22 @@ async function renderExercises(){
         setsCounter.textContent = doneSets + "/" + goalSets + " séries";
         flash.style.display = "block";
         setTimeout(() => { flash.style.display = "none"; }, 2000);
-        startRestTimer(parseRestSeconds(currentMicro.rest));
+
+        const exerciseFinished = doneSets >= goalSets;
+        const isLastExercise = idx === currentExOrder.length - 1;
+        if (exerciseFinished){
+          card.classList.remove('current');
+          card.classList.add('done');
+          const next = card.nextElementSibling;
+          if (next && next.classList.contains('ex-card') && !next.classList.contains('done')){
+            next.classList.add('current');
+          }
+        }
+        if (exerciseFinished && isLastExercise){
+          stopRestTimer(false);
+        } else {
+          startRestTimer(parseRestSeconds(currentMicro.rest));
+        }
       }
       saveBtn.textContent = "✓ Fait";
     });
