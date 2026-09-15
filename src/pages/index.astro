@@ -351,8 +351,8 @@
     <div class="tag">MACROCYCLE : PECS · BRAS · ABDOS</div>
   </div>
   <div class="header-btns">
-    <button class="settings-btn" id="settingsBtn">Réglages</button>
     <button class="settings-btn" id="programBtn">Programme</button>
+    <button class="settings-btn" id="settingsBtn">Réglages</button>
   </div>
 </header>
 
@@ -1224,6 +1224,7 @@ function renderProgramView(){
           <div class="prog-micro-head">
             <span class="prog-micro-dot ${micro.key}"></span>
             <span class="prog-micro-name">${micro.name}</span>
+            <button type="button" class="ex-info-btn prog-micro-info-btn">ⓘ Infos</button>
             <span class="prog-micro-weeks">Semaines ${micro.w[0]}–${micro.w[1]}</span>
           </div>
           <div class="prog-micro-detail">${micro.reps} reps · repos ${micro.rest}</div>
@@ -1266,6 +1267,10 @@ function renderProgramView(){
     <p class="prog-seances-note">Les exercices restent identiques sur tout le macrocycle — seuls les reps/repos ci-dessus changent selon le microcycle en cours.</p>
     ${seanceDetail}
   `;
+
+  container.querySelectorAll('.prog-micro-info-btn').forEach((btn) => {
+    btn.addEventListener('click', openMicroLegend);
+  });
 }
 
 function toggleProgram(){
@@ -1539,8 +1544,13 @@ document.getElementById('validateBtn').addEventListener('click', async () => {
 });
 
 document.getElementById('settingsBtn').addEventListener('click', () => {
-  document.getElementById('manualCount').value = completedCount;
-  document.getElementById('settingsPanel').classList.remove('hidden');
+  const panel = document.getElementById('settingsPanel');
+  if (panel.classList.contains('hidden')){
+    document.getElementById('manualCount').value = completedCount;
+    panel.classList.remove('hidden');
+  } else {
+    panel.classList.add('hidden');
+  }
 });
 document.getElementById('closeSettingsBtn').addEventListener('click', () => {
   document.getElementById('settingsPanel').classList.add('hidden');
