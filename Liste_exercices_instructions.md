@@ -133,3 +133,108 @@ Exercices retirés de la sélection active (priorisation selon le classement Nas
 2. Laisser les bras s'étirer complètement en bas du mouvement
 3. Fléchir les coudes pour remonter les haltères
 4. Ajuster l'angle du banc selon ta souplesse : plus redressé au début, plus incliné avec l'expérience
+
+---
+
+# Liste des exercices (poids du corps) — Séances hors salle
+
+Ces exercices n'appartiennent pas au programme salle ci-dessus : ce sont 2 circuits complets à part (Full-body A et Full-body B), sans suivi de charge, sourcés depuis les vidéos de Brieuc Le Dantec (sauf mention contraire).
+
+## Full-body A
+
+### Body rows
+**Vidéo** : https://www.youtube.com/watch?v=HXTeIFQGtd0&t=52s
+1. Utiliser un support solide à tirer vers soi (deux chaises, un pack d'eau, ou tout objet assez lourd)
+2. Jambes pliées, une partie du poids du corps supportée par le support
+3. Viser une grande amplitude de mouvement, pas de petits mouvements
+4. Choisir une charge/inclinaison qui rend la dernière répétition vraiment difficile
+
+### Pompes
+**Vidéo** : https://www.youtube.com/watch?v=HXTeIFQGtd0&t=111s
+1. Mains posées sur des chaises si disponibles pour descendre plus profondément, sinon au sol
+2. Descendre en contrôlant, viser une amplitude complète
+3. Possible sur les genoux pour les débutants, en gardant l'amplitude complète plutôt qu'une demi-amplitude sur les pieds
+
+### Pompes piquées
+**Vidéo** : https://www.youtube.com/watch?v=HXTeIFQGtd0&t=181s
+1. Position en "V" inversé, bassin haut, buste orienté vers les mains
+2. Garder le poids constamment sur les épaules, pas basculé vers les pieds
+3. Les pieds ne décollent pas du sol (sauf niveau avancé)
+4. Possible sur les genoux pour réduire la difficulté
+
+### Extensions de triceps au sol
+**Vidéo** : https://www.youtube.com/watch?v=HXTeIFQGtd0&t=241s
+1. Position proche de la pompe, mains posées au sol
+2. Éloigner les mains de soi pour plus de facilité, les rapprocher pour plus de difficulté (plus de poids sur les triceps)
+3. Possible à genoux pour réduire la difficulté
+
+### Cosaques alternés
+**Vidéo** : https://www.youtube.com/watch?v=HXTeIFQGtd0&t=304s
+1. Position large, transférer le poids d'un côté en pliant la jambe correspondante, l'autre jambe tendue
+2. Descendre à l'amplitude que tu peux gérer, progresser vers plus bas avec le temps
+3. Alterner les côtés
+
+### Fentes alternées
+**Vidéo** : https://www.youtube.com/watch?v=HXTeIFQGtd0&t=395s
+1. Descendre en fente jusqu'à ce que le genou touche ou frôle le sol, sans prendre appui dessus
+2. Adapter la profondeur à ton niveau
+3. Alterner les jambes
+
+### Gainage reach through
+**Vidéo** : https://www.youtube.com/watch?v=HXTeIFQGtd0&t=600s
+1. Position de gainage (planche), un bras tendu qui vient chercher sous le corps de l'autre côté
+2. Alterner les côtés à chaque répétition
+
+### Bateau
+**Vidéo** : https://www.youtube.com/watch?v=HXTeIFQGtd0&t=696s
+1. Équilibre sur le bassin, jambes et buste relevés
+2. Plier les jambes si besoin pour tenir la position plus facilement
+3. Contracter les abdos au maximum pendant toute la durée
+
+## Full-body B
+
+### Body rows
+*(voir Full-body A ci-dessus — même exercice, présent dans les deux circuits)*
+
+### Dips
+**Vidéo** : https://www.youtube.com/watch?v=zK57ipDwkDg&t=130s
+1. Mains en appui sur un support (chaise, banc), bras vers l'arrière
+2. En remontant, tendre les bras et faire basculer le poids vers l'arrière des épaules
+3. Enrouler l'épaule en arrière pour bien cibler l'arrière des épaules et les triceps
+
+### Pompes diamant
+**Vidéo** : https://www.youtube.com/watch?v=zK57ipDwkDg&t=379s
+1. Mains rapprochées sous le buste, plus serrées que la largeur des épaules
+2. Plus les mains sont resserrées, plus les triceps travaillent
+3. Resserrer progressivement les mains au fil de la progression
+
+### Pompes explosives négatives
+**Vidéo** : https://www.youtube.com/watch?v=zK57ipDwkDg&t=301s
+1. Position de pompe classique
+2. Pousser le plus explosivement possible à la montée
+3. Contrôler et ralentir la descente
+
+### Montées de hanches à une jambe
+**Vidéo** : https://www.youtube.com/watch?v=HXTeIFQGtd0&t=490s
+1. Allongé sur le dos, une jambe levée, l'autre pied au sol
+2. Pousser le bassin vers le haut en contractant le fessier
+3. Éviter de s'appuyer sur les bras — seul le fessier doit travailler
+
+### Montées de mollets
+**Vidéo** : https://www.youtube.com/watch?v=HXTeIFQGtd0&t=560s
+1. Appui possible sur un mur ou un meuble pour l'équilibre
+2. Monter sur la pointe des pieds, une jambe à la fois
+3. Monter le plus haut possible — l'amplitude prime sur la vitesse d'exécution
+
+### Twist russe
+**Vidéo** : https://www.youtube.com/watch?v=VAkPh40gS5M&t=703s
+1. Assis, buste légèrement penché en arrière, pieds décollés du sol (ou au sol si plus facile)
+2. Faire pivoter le buste d'un côté puis de l'autre, sans chercher une grande amplitude
+3. Se concentrer sur l'intensité de la contraction plutôt que sur l'amplitude
+4. Plier les genoux si nécessaire pour rendre l'exercice plus accessible
+
+### Gainage côté
+**Vidéo** : https://www.youtube.com/watch?v=ZlVJ_aCDsAQ&t=180s
+1. Allongé sur le côté, appui sur l'avant-bras, corps aligné et tendu
+2. Se tenir aussi droit que possible, hanches décollées du sol
+3. Tenir la position, puis changer de côté
