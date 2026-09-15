@@ -40,8 +40,14 @@ async function searchExercise(term) {
   return res.json();
 }
 
-async function downloadGif(gifUrl, destPath) {
-  const res = await fetch(gifUrl);
+async function downloadGif(exerciseId, destPath) {
+  const url = `https://${API_HOST}/image?exerciseId=${exerciseId}&resolution=180`;
+  const res = await fetch(url, {
+    headers: {
+      'X-RapidAPI-Key': RAPIDAPI_KEY,
+      'X-RapidAPI-Host': API_HOST,
+    },
+  });
   if (!res.ok) throw new Error(`Téléchargement échoué (HTTP ${res.status})`);
   const buffer = Buffer.from(await res.arrayBuffer());
   await writeFile(destPath, buffer);
@@ -88,7 +94,7 @@ async function main() {
 
     const destPath = path.join(GIFS_DIR, `${slug}.gif`);
     try {
-      await downloadGif(matched.gifUrl, destPath);
+      await downloadGif(matched.id, destPath);
       console.log(`✓ ${name} -> ${slug}.gif (via "${usedTerm}", ${candidateCount} résultat(s), matché "${matched.name}")`);
       results.push({
         slug,
