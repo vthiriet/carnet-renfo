@@ -69,6 +69,44 @@ Les reps/charges/repos à appliquer à chaque exercice dépendent du mésocycle 
 
 **Bloc abdos** : identique aux séances A/B
 
+## Fonctionnalités de l'application (à jour)
+
+L'application (Astro + Supabase + Vercel, `carnet-renfo.vercel.app`) couvre aujourd'hui :
+
+**Suivi du programme salle**
+- Compteur de séances validées (0 à 72), fait avancer automatiquement la rotation A → B → C → A…
+- Calcul automatique de la position (semaine, mésocycle, microcycle) à partir du compteur — pas de date impliquée
+- Réglages manuels : ajuster le compteur, annuler la dernière séance validée
+
+**Séances salle**
+- Pour chaque exercice : champs kg/reps (pré-remplis avec la dernière charge enregistrée), bouton "✓ Fait" qui enregistre la série et lance le minuteur de repos
+- Compteur de séries par exercice (X/Y séries), objectif de séries calculé selon la catégorie de l'exercice (principal/isolation/abdo/dos) et la phase du microcycle en cours
+- Champ "kg" optionnel/masqué pour les exercices sans charge (ex. Relevé de jambes suspendu)
+- États visuels : exercice en cours mis en évidence, exercice terminé passé en vert, progression automatique vers le suivant dès la dernière série validée
+- Réorganisation de l'ordre des exercices à la volée (boutons ▲▼), utile selon la disponibilité des machines
+- Dernier repos automatiquement désactivé après la dernière série du dernier exercice (fin de séance)
+- Étiquette de groupe musculaire colorée (Pecs/Bras/Abdos/Dos) sur chaque exercice
+- Fiche "ⓘ Infos" par exercice : lien vidéo, étapes d'exécution, GIF illustrant le mouvement (exercices salle uniquement pour le moment)
+
+**Minuteur de repos**
+- Décompte visuel avec vibration + bip sonore à la fin, disparition immédiate à 0
+- Bouton "Passer" pour l'interrompre manuellement
+
+**Séances poids du corps (hors salle)**
+- Accessible via le bouton "Séance poids du corps" en haut de l'appli, complètement indépendant de la progression salle (aucun impact sur le compteur, aucune charge suivie)
+- 2 circuits full-body (Full-body A et B), sourcés de vidéos de circuits réels (Brieuc Le Dantec)
+- Déroulé exercice par exercice avec repos de 30 sec entre chaque exercice, minuteur d'effort pour les exercices à tenue statique
+- Badge "Tour X", bouton "Refaire un tour !" en fin de circuit (relance un repos de 1 min 30 puis reprend au premier exercice)
+- Fiches "Infos" avec vidéo et étapes (pas de GIF pour l'instant)
+
+**Progressive Web App (PWA)**
+- Installable sur mobile (icône sur l'écran d'accueil, ouverture en plein écran)
+- Fonctionne hors connexion pour la consultation (dashboard, liste d'exercices, instructions, GIFs) grâce à un service worker qui met en cache les pages visitées
+- Limite assumée : enregistrer une série ou valider une séance nécessite toujours une connexion (écriture Supabase en temps réel) — pas de file d'attente hors ligne pour le moment
+
+**Fiabilité Supabase**
+- Ping automatique programmé (GitHub Actions, lundi/jeudi) pour éviter la mise en pause du projet Supabase après 7 jours d'inactivité
+
 ## Suivi (à mettre à jour au fil du temps)
 - Nombre de séances validées depuis le début du macrocycle : [à compléter] / 72
 - Note : la progression se base sur ce compteur de séances validées, pas sur des dates — rater une séance ne décale rien, il suffit de reprendre au prochain numéro non validé
