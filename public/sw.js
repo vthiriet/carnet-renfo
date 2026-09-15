@@ -1,4 +1,4 @@
-const CACHE_NAME = 'carnet-renfo-v1';
+const CACHE_NAME = 'carnet-renfo-v2';
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -24,7 +24,9 @@ self.addEventListener('fetch', (event) => {
       .then((res) => {
         if (res.ok) {
           const resClone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
+          event.waitUntil(
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone))
+          );
         }
         return res;
       })
