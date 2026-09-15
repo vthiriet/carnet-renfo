@@ -1,6 +1,6 @@
 [
   { "slug": "developpe-decline", "name": "Développé légèrement décliné", "searchTerms": ["decline dumbbell bench press", "decline barbell bench press", "decline bench press", "decline press"] },
-  { "slug": "ecarte-poulie-vis-a-vis", "name": "Écarté poulie vis-à-vis, assis", "searchTerms": ["seated cable fly", "cable crossover", "cable fly", "pec deck"] },
+  { "slug": "ecarte-poulie-vis-a-vis", "name": "Écarté poulie vis-à-vis, assis", "searchTerms": ["seated cable fly", "cable crossover", "cable fly", "pec deck", "cable flye", "seated flye", "fly", "flye", "chest fly"] },
   { "slug": "dips-barres-paralleles", "name": "Dips barres parallèles", "searchTerms": ["dips - triceps version", "chest dip"] },
   { "slug": "developpe-machine-convergente", "name": "Développé machine convergente", "searchTerms": ["lever chest press", "machine chest press"] },
   { "slug": "curl-poulie-basse", "name": "Curl poulie basse", "searchTerms": ["cable curl", "standing cable curl"] },
