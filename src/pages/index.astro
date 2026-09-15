@@ -1174,13 +1174,20 @@ function renderBar(week){
   }
 }
 
+function withTimeout(promise, ms = 2000){
+  return Promise.race([
+    promise,
+    new Promise((resolve) => setTimeout(() => resolve({ error: new Error('timeout') }), ms))
+  ]);
+}
+
 async function loadCount(){
   try{
-    const { data, error } = await supabase
+    const { data, error } = await withTimeout(supabase
       .from('progress')
       .select('completed_count')
       .eq('id', 1)
-      .single();
+      .single());
     if (error || !data) return 0;
     return data.completed_count;
   }catch(e){ return 0; }
@@ -1188,10 +1195,10 @@ async function loadCount(){
 
 async function saveCount(val){
   try{
-    const { error } = await supabase
+    const { error } = await withTimeout(supabase
       .from('progress')
       .update({ completed_count: val })
-      .eq('id', 1);
+      .eq('id', 1));
     return !error;
   }catch(e){ return false; }
 }
@@ -1235,14 +1242,14 @@ function render(){
 
 async function getLastLog(exName){
   try{
-    const { data, error } = await supabase
+    const { data, error } = await withTimeout(supabase
       .from('exercise_logs')
       .select('poids, reps, date, target_reps, target_rest')
       .eq('exercise_name', exName)
       .order('date', { ascending: false })
       .order('created_at', { ascending: false })
       .limit(1)
-      .maybeSingle();
+      .maybeSingle());
     if (error || !data) return null;
     return data;
   }catch(e){ return null; }
@@ -1250,7 +1257,7 @@ async function getLastLog(exName){
 
 async function saveLog(exName, poids, reps, seance, targetReps, targetRest){
   try{
-    const { error } = await supabase
+    const { error } = await withTimeout(supabase
       .from('exercise_logs')
       .insert({
         exercise_name: exName,
@@ -1260,7 +1267,7 @@ async function saveLog(exName, poids, reps, seance, targetReps, targetRest){
         seance,
         target_reps: targetReps,
         target_rest: targetRest
-      });
+      }));
     return !error;
   }catch(e){ return false; }
 }
@@ -1268,12 +1275,12 @@ async function saveLog(exName, poids, reps, seance, targetReps, targetRest){
 async function getTodaySetCount(exName, seance){
   try{
     const today = new Date().toISOString().slice(0,10);
-    const { count, error } = await supabase
+    const { count, error } = await withTimeout(supabase
       .from('exercise_logs')
       .select('*', { count: 'exact', head: true })
       .eq('exercise_name', exName)
       .eq('seance', seance)
-      .eq('date', today);
+      .eq('date', today));
     if (error) return 0;
     return count || 0;
   }catch(e){ return 0; }
@@ -1284,12 +1291,16 @@ async function renderExercises(){
   container.innerHTML = "";
   let currentAssigned = false;
 
+  const prefetched = await Promise.all(currentExOrder.map((exName) =>
+    Promise.all([getLastLog(exName), getTodaySetCount(exName, currentSeanceLetter)])
+  ));
+
   for(let idx = 0; idx < currentExOrder.length; idx++){
     const exName = currentExOrder[idx];
     const card = document.createElement('div');
     card.className = "ex-card";
-    const last = await getLastLog(exName);
-    let doneSets = await getTodaySetCount(exName, currentSeanceLetter);
+    const [last, prefetchedDoneSets] = prefetched[idx];
+    let doneSets = prefetchedDoneSets;
     const goalSets = targetSets(exName, currentMicro.key);
     const muscle = MUSCLE_GROUP[exName];
     const noLoad = NO_LOAD_EXERCISES.has(exName);
