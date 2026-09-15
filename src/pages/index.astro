@@ -238,6 +238,7 @@
     text-decoration:none; border:1px solid var(--brass-dim); border-radius:7px; padding:8px 12px;
   }
   .info-steps{ margin:0 0 4px; padding-left:20px; color:var(--text); font-size:13px; line-height:1.6; }
+  .info-gif{ display:block; width:100%; border-radius:9px; margin:12px 0 4px; background:#000; }
   .info-variant-name{
     font-family:'Oswald',sans-serif; font-size:12px; color:var(--brass);
     text-transform:uppercase; letter-spacing:0.05em; margin:16px 0 8px;
@@ -445,14 +446,14 @@ const SEANCES = {
     "Curl poulie basse",
     "Tractions supination",
     "Extensions trichées",
-    "Dips triceps sur banc",
+    "Dips triceps",
     "Crunch poulie haute",
     "Relevé de jambes suspendu"
   ]},
   C: { label:"Séance C : Pecs + Bras + Abdos + Dos", ex:[
     "Développé machine convergente",
     "Curl marteau",
-    "Dips triceps sur banc",
+    "Dips triceps",
     "Tirage vertical/Tractions (dos)",
     "Crunch poulie haute",
     "Relevé de jambes suspendu"
@@ -468,7 +469,7 @@ const MUSCLE_GROUP = {
   "Tractions supination": "bras",
   "Curl marteau": "bras",
   "Extensions trichées": "bras",
-  "Dips triceps sur banc": "bras",
+  "Dips triceps": "bras",
   "Tirage vertical/Tractions (dos)": "dos",
   "Crunch poulie haute": "abdos",
   "Relevé de jambes suspendu": "abdos"
@@ -487,7 +488,7 @@ const EXERCISE_CATEGORY = {
   "Tractions supination": "principal",
   "Curl marteau": "isolation",
   "Extensions trichées": "isolation",
-  "Dips triceps sur banc": "isolation",
+  "Dips triceps": "isolation",
   "Tirage vertical/Tractions (dos)": "dos",
   "Crunch poulie haute": "abdo",
   "Relevé de jambes suspendu": "abdo"
@@ -509,6 +510,7 @@ function targetSets(exName, microKey){
 const EXERCISE_INFO = {
   "Développé légèrement décliné": {
     video: "https://www.youtube.com/watch?v=qq_bX5iw0HY&t=437s",
+    gif: "/gifs/developpe-decline.gif",
     steps: [
       "Régler le banc avec un léger angle décliné (10-20°)",
       "Amplitude complète, descente contrôlée jusqu'à la poitrine",
@@ -517,6 +519,7 @@ const EXERCISE_INFO = {
   },
   "Écarté poulie vis-à-vis, assis": {
     video: "https://www.youtube.com/watch?v=qq_bX5iw0HY&t=235s",
+    gif: "/gifs/ecarte-poulie-vis-a-vis.gif",
     steps: [
       "S'asseoir entre les deux poulies pour une bonne stabilité (pas debout en marchant vers l'avant)",
       "Garder les coudes verrouillés et les omoplates serrées du début à la fin",
@@ -526,6 +529,7 @@ const EXERCISE_INFO = {
   },
   "Dips barres parallèles": {
     video: "https://www.youtube.com/watch?v=qq_bX5iw0HY&t=437s",
+    gif: "/gifs/dips-barres-paralleles.gif",
     steps: [
       "Se pencher en avant sur toute la durée du mouvement (une position droite sollicite plus les triceps que les pecs)",
       "Descendre en amplitude complète si possible",
@@ -535,6 +539,7 @@ const EXERCISE_INFO = {
   },
   "Développé machine convergente": {
     video: "https://www.youtube.com/watch?v=qq_bX5iw0HY&t=344s",
+    gif: "/gifs/developpe-machine-convergente.gif",
     steps: [
       "Choisir une machine à bonne courbe de résistance si possible (plus difficile en haut du mouvement qu'en bas)",
       "Position haute ou basse au choix (haut ou bas des pecs)",
@@ -543,6 +548,7 @@ const EXERCISE_INFO = {
   },
   "Extensions trichées": {
     video: "https://www.youtube.com/watch?v=cXNeX_t08wQ&t=506s",
+    gif: "/gifs/extensions-trichees.gif",
     steps: [
       "Allongé sur un banc, haltères tendus au-dessus de la poitrine",
       "Phase 1 : fléchir les coudes pour amener les haltères vers le front",
@@ -551,8 +557,9 @@ const EXERCISE_INFO = {
       "Commencer léger pour apprivoiser la trajectoire avant d'augmenter la charge ; garder le mouvement contrôlé, sans inertie"
     ]
   },
-  "Dips triceps sur banc": {
+  "Dips triceps": {
     video: "https://www.youtube.com/watch?v=cXNeX_t08wQ&t=391s",
+    gif: "/gifs/dips-triceps-banc.gif",
     steps: [
       "Mains posées sur un banc derrière toi, jambes tendues devant (ou pliées pour réduire la difficulté)",
       "Poser des disques sur les cuisses pour charger",
@@ -562,6 +569,7 @@ const EXERCISE_INFO = {
   },
   "Curl poulie basse": {
     video: "https://www.youtube.com/watch?v=di2pTqQKdss&t=534s",
+    gif: "/gifs/curl-poulie-basse.gif",
     steps: [
       "Se placer face à la poulie basse, bras tendus vers le bas",
       "Garder l'humérus perpendiculaire au sol du début à la fin (ne pas reculer les coudes en arrière)",
@@ -572,6 +580,7 @@ const EXERCISE_INFO = {
   },
   "Tractions supination": {
     video: "https://www.youtube.com/watch?v=di2pTqQKdss&t=401s",
+    gif: "/gifs/tractions-supination.gif",
     steps: [
       "Suspendu à la barre, prise supination (paumes vers soi), mains écartées largeur d'épaules",
       "Tirer le corps vers le haut jusqu'à ce que le menton dépasse la barre",
@@ -581,6 +590,7 @@ const EXERCISE_INFO = {
   },
   "Curl marteau": {
     video: "https://www.youtube.com/shorts/IAxKbIuoPKc",
+    gif: "/gifs/curl-marteau.gif",
     steps: [
       "Haltères en prise neutre (position \"marteau\", paume vers l'intérieur)",
       "Privilégier un mouvement unilatéral, légèrement sur le côté, pour bien isoler le biceps",
@@ -592,6 +602,7 @@ const EXERCISE_INFO = {
   },
   "Crunch poulie haute": {
     video: "https://www.youtube.com/watch?v=IYUQPA4BwJo&t=316s",
+    gif: "/gifs/crunch-poulie-haute.gif",
     steps: [
       "À genoux face à la poulie haute, corde tenue de chaque côté de la tête",
       "Fléchir la colonne vertébrale en amenant le buste vers le bas (mouvement du torse, pas des bras)",
@@ -600,6 +611,7 @@ const EXERCISE_INFO = {
   },
   "Relevé de jambes suspendu": {
     video: "https://www.youtube.com/watch?v=IYUQPA4BwJo&t=324s",
+    gif: "/gifs/releve-jambes-suspendu.gif",
     steps: [
       "Suspendu à la barre, jambes tendues ou légèrement fléchies",
       "Relever les jambes en fléchissant la colonne via le bassin (pas juste un mouvement de hanche)",
@@ -611,6 +623,7 @@ const EXERCISE_INFO = {
       {
         name: "Tirage vertical, prise supination",
         video: "https://www.youtube.com/watch?v=Ibr1O8UxU3E&t=331s",
+        gif: "/gifs/tirage-vertical-supination.gif",
         steps: [
           "Assis face à la poulie haute, prise supination (paumes vers soi)",
           "Démarrer bras légèrement fléchi (pas tendu) et buste légèrement penché en arrière pour ne pas trop étirer le dos au départ",
@@ -622,6 +635,7 @@ const EXERCISE_INFO = {
       {
         name: "Tractions pronation",
         video: "https://www.youtube.com/watch?v=Ibr1O8UxU3E&t=438s",
+        gif: "/gifs/tractions-pronation.gif",
         steps: [
           "Suspendu à la barre, prise pronation (paumes vers l'avant), mains écartées largeur d'épaules",
           "Tirer le corps vers le haut jusqu'au menton",
@@ -903,11 +917,13 @@ function renderExerciseInfoBody(info){
       <div class="info-variant-name">${v.name}</div>
       <a class="info-video-link" href="${v.video}" target="_blank" rel="noopener">▶ Voir la vidéo</a>
       <ol class="info-steps">${v.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+      ${v.gif ? `<img class="info-gif" src="${v.gif}" alt="Exécution : ${v.name}" loading="lazy">` : ''}
     `).join('');
   }
   return `
     <a class="info-video-link" href="${info.video}" target="_blank" rel="noopener">▶ Voir la vidéo</a>
     <ol class="info-steps">${info.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+    ${info.gif ? `<img class="info-gif" src="${info.gif}" alt="Exécution de l'exercice" loading="lazy">` : ''}
   `;
 }
 
