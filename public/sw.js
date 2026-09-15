@@ -1,4 +1,4 @@
-const CACHE_NAME = 'carnet-renfo-v2';
+const CACHE_NAME = 'carnet-renfo-v3';
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -30,6 +30,10 @@ self.addEventListener('fetch', (event) => {
         }
         return res;
       })
-      .catch(() => caches.match(req).then((cached) => cached || caches.match('/')))
+      .catch(() => caches.match(req).then((cached) => {
+        if (cached) return cached;
+        if (req.mode === 'navigate') return caches.match('/');
+        return new Response('', { status: 504, statusText: 'Offline and not cached' });
+      }))
   );
 });
