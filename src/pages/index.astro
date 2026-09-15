@@ -6,6 +6,10 @@
 <title>Carnet Renfo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="theme-color" content="#17140f">
 <style is:global>
   :root{
     --bg: #17140f;
@@ -1431,6 +1435,12 @@ async function init(){
 }
 
 init();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>
