@@ -65,6 +65,7 @@
     font-family:'Inter',sans-serif;
   }
   .settings-btn:active{ background: var(--panel-2); }
+  .header-btns{ display:flex; gap:8px; flex-shrink:0; }
 
   .card{
     background: var(--panel);
@@ -299,6 +300,47 @@
   }
   .bw-ex-controls{ margin-top:12px; }
   .bw-action-btn{ margin:0; }
+
+  /* Program view */
+  .prog-header{ margin-bottom:16px; }
+  .prog-header .tag{ margin-top:4px; }
+  .prog-meso{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:16px; margin-bottom:14px;
+  }
+  .prog-meso.current{ border-color:var(--brass); }
+  .prog-meso-head{ display:flex; flex-wrap:wrap; align-items:baseline; gap:8px; margin-bottom:12px; }
+  .prog-meso-index{ font-family:'Oswald',sans-serif; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; }
+  .prog-meso-name{ font-family:'Oswald',sans-serif; font-size:15px; font-weight:600; }
+  .prog-meso-weeks{ font-size:11px; color:var(--muted); margin-left:auto; }
+  .prog-micro{
+    background:var(--panel-2); border-radius:8px; padding:12px 14px; margin-bottom:10px;
+    border-left:3px solid var(--line);
+  }
+  .prog-micro:last-child{ margin-bottom:0; }
+  .prog-micro.current{ border-left-color:var(--brass); outline:1px solid var(--brass); outline-offset:-1px; }
+  .prog-micro-head{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .prog-micro-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .prog-micro-dot.meca{ background:var(--phase-meca); }
+  .prog-micro-dot.meta{ background:var(--phase-meta); }
+  .prog-micro-dot.over{ background:var(--phase-over); }
+  .prog-micro-name{ font-size:13px; font-weight:600; }
+  .prog-micro-weeks{ font-size:10.5px; color:var(--muted); margin-left:auto; }
+  .prog-micro-detail{ font-size:11.5px; color:var(--muted); margin-top:4px; }
+  .prog-micro-note{ font-size:10.5px; color:var(--brass); margin-top:4px; line-height:1.4; }
+  .prog-seance-chips{ display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  .prog-seance-chip{
+    font-family:'Oswald',sans-serif; font-size:9.5px; text-transform:uppercase; letter-spacing:0.05em;
+    color:var(--muted); background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:4px 9px;
+  }
+  .prog-seances-title{ margin-top:20px; }
+  .prog-seances-note{ font-size:12px; color:var(--muted); margin:0 0 14px; line-height:1.5; }
+  .prog-seance-detail{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:14px 16px; margin-bottom:10px;
+  }
+  .prog-seance-title{ font-family:'Oswald',sans-serif; font-size:13px; font-weight:600; color:var(--brass); margin-bottom:8px; }
+  .prog-seance-ex-list{ margin:0; padding-left:18px; font-size:12.5px; color:var(--text); line-height:1.8; }
 </style>
 </head>
 <body>
@@ -308,7 +350,10 @@
     <h1>Carnet Renfo</h1>
     <div class="tag">MACROCYCLE : PECS · BRAS · ABDOS</div>
   </div>
-  <button class="settings-btn" id="settingsBtn">Réglages</button>
+  <div class="header-btns">
+    <button class="settings-btn" id="settingsBtn">Réglages</button>
+    <button class="settings-btn" id="programBtn">Programme</button>
+  </div>
 </header>
 
 <button class="bodyweight-btn" id="bodyweightBtn">Séance poids du corps</button>
@@ -377,6 +422,8 @@
   </div>
 
 </div>
+
+<div id="programView" class="hidden"></div>
 
 <div id="bodyweightListView" class="hidden">
   <button type="button" class="ghost bw-back-btn" id="bwListBackBtn">← Retour</button>
@@ -1160,6 +1207,87 @@ function getPosition(week){
   const micro = meso.micro.find(mc => week >= mc.w[0] && week <= mc.w[1]);
   return { meso, micro };
 }
+
+let programOpen = false;
+
+function renderProgramView(){
+  const container = document.getElementById('programView');
+  const week = getWeekFromCount(Math.min(completedCount, TOTAL_SESSIONS - 1));
+  const pos = getPosition(week);
+
+  const mesoBlocks = PROGRAM.map((meso, mesoIdx) => {
+    const isCurrentMeso = meso === pos.meso;
+    const microBlocks = meso.micro.map((micro) => {
+      const isCurrentMicro = micro === pos.micro;
+      return `
+        <div class="prog-micro ${micro.key} ${isCurrentMicro ? 'current' : ''}" ${isCurrentMicro ? 'id="progCurrentMicro"' : ''}>
+          <div class="prog-micro-head">
+            <span class="prog-micro-dot ${micro.key}"></span>
+            <span class="prog-micro-name">${micro.name}</span>
+            <span class="prog-micro-weeks">Semaines ${micro.w[0]}–${micro.w[1]}</span>
+          </div>
+          <div class="prog-micro-detail">${micro.reps} reps · repos ${micro.rest}</div>
+          ${micro.note ? `<div class="prog-micro-note">${micro.note}</div>` : ''}
+          <div class="prog-seance-chips">
+            ${SEANCE_ORDER.map(letter => `<span class="prog-seance-chip">${SEANCES[letter].label.split(' : ')[0]}</span>`).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
+    return `
+      <div class="prog-meso ${isCurrentMeso ? 'current' : ''}">
+        <div class="prog-meso-head">
+          <span class="prog-meso-index">Mésocycle ${mesoIdx + 1}</span>
+          <span class="prog-meso-name">${meso.name}</span>
+          <span class="prog-meso-weeks">Semaines ${meso.start}–${meso.end}</span>
+        </div>
+        ${microBlocks}
+      </div>
+    `;
+  }).join('');
+
+  const seanceDetail = SEANCE_ORDER.map((letter) => {
+    const data = SEANCES[letter];
+    return `
+      <div class="prog-seance-detail">
+        <div class="prog-seance-title">${data.label}</div>
+        <ul class="prog-seance-ex-list">${data.ex.map(exName => `<li>${exName}</li>`).join('')}</ul>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="prog-header">
+      <h2 class="bw-section-title">Programme complet</h2>
+      <div class="tag">MACROCYCLE : PECS · BRAS · ABDOS</div>
+    </div>
+    ${mesoBlocks}
+    <h2 class="bw-section-title prog-seances-title">Composition des séances</h2>
+    <p class="prog-seances-note">Les exercices restent identiques sur tout le macrocycle — seuls les reps/repos ci-dessus changent selon le microcycle en cours.</p>
+    ${seanceDetail}
+  `;
+}
+
+function toggleProgram(){
+  programOpen = !programOpen;
+  const view = document.getElementById('programView');
+  if (programOpen){
+    renderProgramView();
+    document.getElementById('mainApp').classList.add('hidden');
+    document.getElementById('bodyweightBtn').classList.add('hidden');
+    document.getElementById('bodyweightListView').classList.add('hidden');
+    document.getElementById('bodyweightSessionView').classList.add('hidden');
+    view.classList.remove('hidden');
+    const current = document.getElementById('progCurrentMicro');
+    if (current) current.scrollIntoView({ block: 'center' });
+  } else {
+    view.classList.add('hidden');
+    document.getElementById('mainApp').classList.remove('hidden');
+    document.getElementById('bodyweightBtn').classList.remove('hidden');
+  }
+}
+
+document.getElementById('programBtn').addEventListener('click', toggleProgram);
 
 function renderBar(week){
   const bar = document.getElementById('weekBar');
