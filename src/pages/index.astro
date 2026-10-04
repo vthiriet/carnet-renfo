@@ -997,22 +997,17 @@ document.addEventListener('visibilitychange', () => {
 
 document.getElementById('restSkipBtn').addEventListener('click', () => stopRestTimer(true));
 
-function getVideoHref(url){
-  if (!/Android/i.test(navigator.userAgent)) return url;
-  return url.replace(/^https?:\/\/(www\.)?youtube\.com/i, 'vnd.youtube://www.youtube.com');
-}
-
 function renderExerciseInfoBody(info){
   if (info.variants){
     return info.variants.map(v => `
       <div class="info-variant-name">${v.name}</div>
-      <a class="info-video-link" href="${getVideoHref(v.video)}" target="_blank" rel="noopener">▶ Voir la vidéo</a>
+      <a class="info-video-link" href="${v.video}" target="_blank" rel="noopener">▶ Voir la vidéo</a>
       <ol class="info-steps">${v.steps.map(s => `<li>${s}</li>`).join('')}</ol>
       ${v.gif ? `<img class="info-gif" src="${v.gif}" alt="Exécution : ${v.name}" loading="lazy">` : ''}
     `).join('');
   }
   return `
-    <a class="info-video-link" href="${getVideoHref(info.video)}" target="_blank" rel="noopener">▶ Voir la vidéo</a>
+    <a class="info-video-link" href="${info.video}" target="_blank" rel="noopener">▶ Voir la vidéo</a>
     <ol class="info-steps">${info.steps.map(s => `<li>${s}</li>`).join('')}</ol>
     ${info.gif ? `<img class="info-gif" src="${info.gif}" alt="Exécution de l'exercice" loading="lazy">` : ''}
   `;
