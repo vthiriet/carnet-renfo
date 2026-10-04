@@ -946,39 +946,50 @@ function updateRestDisplay(remaining){
 }
 
 let restOnComplete = null;
+let restEndTime = null;
 
 function stopRestTimer(triggerCallback){
   if (restInterval){ clearInterval(restInterval); restInterval = null; }
+  restEndTime = null;
   document.getElementById('restTimer').classList.add('hidden');
   const cb = restOnComplete;
   restOnComplete = null;
   if (triggerCallback && cb) cb();
 }
 
+function tickRestTimer(){
+  if (restEndTime === null) return;
+  const remaining = Math.ceil((restEndTime - Date.now()) / 1000);
+  if (remaining <= 0){
+    if (restInterval){ clearInterval(restInterval); restInterval = null; }
+    restEndTime = null;
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
+    playBeep();
+    document.getElementById('restTimer').classList.add('hidden');
+    const cb = restOnComplete;
+    restOnComplete = null;
+    if (cb) cb();
+    return;
+  }
+  updateRestDisplay(remaining);
+}
+
 function startRestTimer(seconds, label, onComplete){
   stopRestTimer(false);
   document.getElementById('restLabel').textContent = label || "Repos";
   restOnComplete = onComplete || null;
-  let remaining = seconds;
+  restEndTime = Date.now() + seconds * 1000;
   const bar = document.getElementById('restTimer');
   bar.classList.remove('hidden');
-  updateRestDisplay(remaining);
-  restInterval = setInterval(() => {
-    remaining -= 1;
-    if (remaining <= 0){
-      clearInterval(restInterval);
-      restInterval = null;
-      if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
-      playBeep();
-      bar.classList.add('hidden');
-      const cb = restOnComplete;
-      restOnComplete = null;
-      if (cb) cb();
-      return;
-    }
-    updateRestDisplay(remaining);
-  }, 1000);
+  updateRestDisplay(seconds);
+  restInterval = setInterval(tickRestTimer, 1000);
 }
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && restEndTime !== null){
+    tickRestTimer();
+  }
+});
 
 document.getElementById('restSkipBtn').addEventListener('click', () => stopRestTimer(true));
 
