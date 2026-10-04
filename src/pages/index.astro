@@ -100,6 +100,10 @@
   .position-card{ padding:16px 16px 18px; }
   .meso-index{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
   .meso-phase{ font-size:15px; font-weight:600; margin-top:2px; margin-bottom:14px; }
+  .position-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .session-timer{ text-align:right; flex-shrink:0; }
+  .session-timer-label{ font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
+  .session-timer-time{ font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--brass); margin-top:2px; }
   .position-top{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:14px; }
   .week-label{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
   .week-num{ font-size:30px; font-weight:700; line-height:1; }
@@ -152,7 +156,7 @@
   }
   .ex-reorder-btn:active{ background:var(--panel-2); }
   .ex-reorder-btn:disabled{ opacity:0.25; cursor:default; }
-  .ex-name{ font-size:14.5px; font-weight:600; line-height:1.3; }
+  .ex-name{ font-size:14.5px; font-weight:600; line-height:1.3; user-select:none; -webkit-touch-callout:none; }
   .ex-target{
     flex-shrink:0; text-align:right; font-family:'JetBrains Mono',monospace;
     font-size:11px; color:var(--brass); white-space:nowrap;
@@ -377,8 +381,16 @@
 <div id="mainApp">
 
   <div class="card position-card">
-    <div class="meso-index" id="mesoIndex">Mésocycle —</div>
-    <div class="meso-phase" id="mesoPhase">— — Semaines —</div>
+    <div class="position-head">
+      <div>
+        <div class="meso-index" id="mesoIndex">Mésocycle —</div>
+        <div class="meso-phase" id="mesoPhase">— — Semaines —</div>
+      </div>
+      <div class="session-timer">
+        <div class="session-timer-label">Séance</div>
+        <div class="session-timer-time num" id="sessionTimerTime">0:00</div>
+      </div>
+    </div>
 
     <div class="position-top">
       <div>
@@ -1208,6 +1220,40 @@ function getPosition(week){
   return { meso, micro };
 }
 
+let sessionTimerInterval = null;
+
+function getSessionStartTime(){
+  let start = localStorage.getItem('sessionStartTime');
+  if (!start){
+    start = Date.now().toString();
+    localStorage.setItem('sessionStartTime', start);
+  }
+  return parseInt(start, 10);
+}
+
+function resetSessionTimer(){
+  localStorage.setItem('sessionStartTime', Date.now().toString());
+  updateSessionTimerDisplay();
+}
+
+function updateSessionTimerDisplay(){
+  const el = document.getElementById('sessionTimerTime');
+  if (!el) return;
+  const elapsedSec = Math.max(0, Math.floor((Date.now() - getSessionStartTime()) / 1000));
+  const h = Math.floor(elapsedSec / 3600);
+  const m = Math.floor((elapsedSec % 3600) / 60);
+  const s = elapsedSec % 60;
+  el.textContent = h > 0
+    ? h + ":" + String(m).padStart(2, '0') + ":" + String(s).padStart(2, '0')
+    : m + ":" + String(s).padStart(2, '0');
+}
+
+function startSessionTimerClock(){
+  updateSessionTimerDisplay();
+  if (sessionTimerInterval) clearInterval(sessionTimerInterval);
+  sessionTimerInterval = setInterval(updateSessionTimerDisplay, 1000);
+}
+
 let programOpen = false;
 
 function renderProgramView(){
@@ -1495,10 +1541,30 @@ async function renderExercises(){
       await renderExercises();
     });
 
+    const nameEl = card.querySelector('.ex-name');
+    let longPressTimer = null;
+    const startLongPress = () => {
+      longPressTimer = setTimeout(() => {
+        document.querySelectorAll('#exList .ex-card.current').forEach(c => c.classList.remove('current'));
+        card.classList.remove('done');
+        card.classList.add('current');
+        if (navigator.vibrate) navigator.vibrate(30);
+      }, 500);
+    };
+    const cancelLongPress = () => {
+      if (longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }
+    };
+    nameEl.addEventListener('pointerdown', startLongPress);
+    nameEl.addEventListener('pointerup', cancelLongPress);
+    nameEl.addEventListener('pointerleave', cancelLongPress);
+    nameEl.addEventListener('pointercancel', cancelLongPress);
+    nameEl.addEventListener('contextmenu', (e) => e.preventDefault());
+
     saveBtn.addEventListener('click', async () => {
       const poids = noLoad ? 0 : parseFloat(wInput.value);
       const reps = parseInt(rInput.value, 10);
-      if(!reps || (!noLoad && !poids)){
+      const poidsMissing = !noLoad && (wInput.value.trim() === "" || isNaN(poids));
+      if(!reps || poidsMissing){
         errorFlash.style.display = "block";
         setTimeout(() => { errorFlash.style.display = "none"; }, 2000);
         return;
@@ -1540,6 +1606,7 @@ document.getElementById('validateBtn').addEventListener('click', async () => {
   const ok = await saveCount(completedCount);
   if(!ok){ completedCount -= 1; alert("Erreur d'enregistrement, réessaie."); return; }
   stopRestTimer();
+  resetSessionTimer();
   render();
 });
 
@@ -1581,6 +1648,7 @@ document.getElementById('undoBtn').addEventListener('click', async () => {
 async function init(){
   completedCount = await loadCount();
   render();
+  startSessionTimerClock();
 }
 
 init();
