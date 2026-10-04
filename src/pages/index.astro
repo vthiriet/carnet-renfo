@@ -191,6 +191,10 @@
   }
   .ex-save:active{ background:var(--brass-dim); }
   .ex-saved-flash{ font-size:11px; color:var(--ok); margin-top:6px; display:none; }
+  .ex-undo-btn{
+    background:none; border:none; color:var(--ok); text-decoration:underline;
+    font-size:11px; font-family:'Inter',sans-serif; cursor:pointer; padding:0; margin-left:4px;
+  }
   .ex-error-flash{ font-size:11px; color:var(--phase-over); margin-top:6px; display:none; }
 
   .validate-btn{
@@ -1479,7 +1483,7 @@ async function getLastLog(exName){
 
 async function saveLog(exName, poids, reps, seance, targetReps, targetRest){
   try{
-    const { error } = await withTimeout(supabase
+    const { data, error } = await withTimeout(supabase
       .from('exercise_logs')
       .insert({
         exercise_name: exName,
@@ -1489,7 +1493,20 @@ async function saveLog(exName, poids, reps, seance, targetReps, targetRest){
         seance,
         target_reps: targetReps,
         target_rest: targetRest
-      }));
+      })
+      .select('id')
+      .single());
+    if (error || !data) return null;
+    return data.id;
+  }catch(e){ return null; }
+}
+
+async function deleteLog(id){
+  try{
+    const { error } = await withTimeout(supabase
+      .from('exercise_logs')
+      .delete()
+      .eq('id', id));
     return !error;
   }catch(e){ return false; }
 }
@@ -1558,7 +1575,7 @@ async function renderExercises(){
         <div class="field"><input type="number" placeholder="reps" class="r-input" inputmode="numeric" value="${last ? last.reps : ''}"></div>
         <button class="ex-save">✓ Fait</button>
       </div>
-      <div class="ex-saved-flash">✓ Série enregistrée</div>
+      <div class="ex-saved-flash">✓ Série enregistrée <button type="button" class="ex-undo-btn">Annuler</button></div>
       <div class="ex-error-flash">Valeurs manquantes</div>
     `;
 
@@ -1603,6 +1620,10 @@ async function renderExercises(){
     card.addEventListener('pointercancel', cancelLongPress);
     card.addEventListener('contextmenu', (e) => { if (!e.target.closest('input, button')) e.preventDefault(); });
 
+    const undoBtn = card.querySelector('.ex-undo-btn');
+    let lastSavedLogId = null;
+    let flashHideTimer = null;
+
     saveBtn.addEventListener('click', async () => {
       const poids = noLoad ? 0 : parseFloat(wInput.value);
       const reps = parseInt(rInput.value, 10);
@@ -1613,12 +1634,14 @@ async function renderExercises(){
         return;
       }
       saveBtn.textContent = "...";
-      const ok = await saveLog(exName, poids, reps, currentSeanceLetter, currentMicro.reps, currentMicro.rest);
-      if(ok){
+      const logId = await saveLog(exName, poids, reps, currentSeanceLetter, currentMicro.reps, currentMicro.rest);
+      if(logId){
+        lastSavedLogId = logId;
         doneSets += 1;
         setsCounter.textContent = doneSets + "/" + goalSets + " séries";
         flash.style.display = "block";
-        setTimeout(() => { flash.style.display = "none"; }, 2000);
+        clearTimeout(flashHideTimer);
+        flashHideTimer = setTimeout(() => { flash.style.display = "none"; lastSavedLogId = null; }, 4000);
 
         const exerciseFinished = doneSets >= goalSets;
         const isLastExercise = idx === currentExOrder.length - 1;
@@ -1637,6 +1660,29 @@ async function renderExercises(){
         }
       }
       saveBtn.textContent = "✓ Fait";
+    });
+
+    undoBtn.addEventListener('click', async () => {
+      if (!lastSavedLogId) return;
+      const idToDelete = lastSavedLogId;
+      lastSavedLogId = null;
+      clearTimeout(flashHideTimer);
+      undoBtn.textContent = "...";
+      const ok = await deleteLog(idToDelete);
+      undoBtn.textContent = "Annuler";
+      if (!ok){ alert("Impossible d'annuler, réessaie."); return; }
+      flash.style.display = "none";
+      doneSets = Math.max(0, doneSets - 1);
+      setsCounter.textContent = doneSets + "/" + goalSets + " séries";
+      if (card.classList.contains('done') && doneSets < goalSets){
+        card.classList.remove('done');
+        card.classList.add('current');
+        const next = card.nextElementSibling;
+        if (next && next.classList.contains('ex-card') && next.classList.contains('current')){
+          next.classList.remove('current');
+        }
+      }
+      stopRestTimer(false);
     });
 
     container.appendChild(card);
