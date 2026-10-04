@@ -104,6 +104,12 @@
   .session-timer{ text-align:right; flex-shrink:0; }
   .session-timer-label{ font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
   .session-timer-time{ font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--brass); margin-top:2px; }
+  .session-timer-start{
+    background:none; border:1px solid var(--brass-dim); color:var(--brass);
+    font-family:'Oswald',sans-serif; font-size:11px; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.04em; padding:6px 10px; border-radius:7px; cursor:pointer; margin-top:2px;
+  }
+  .session-timer-start:active{ background:var(--panel-2); }
   .position-top{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:14px; }
   .week-label{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
   .week-num{ font-size:30px; font-weight:700; line-height:1; }
@@ -141,7 +147,7 @@
 
   .ex-card{
     background:var(--panel); border:1px solid var(--line); border-radius:10px;
-    padding:14px; margin-bottom:10px;
+    padding:14px; margin-bottom:10px; user-select:none; -webkit-touch-callout:none;
   }
   .ex-card.current{ border-color:var(--brass); transform:scale(1.015); }
   .ex-card.done{ border-color:var(--ok); opacity:0.55; }
@@ -156,7 +162,8 @@
   }
   .ex-reorder-btn:active{ background:var(--panel-2); }
   .ex-reorder-btn:disabled{ opacity:0.25; cursor:default; }
-  .ex-name{ font-size:14.5px; font-weight:600; line-height:1.3; user-select:none; -webkit-touch-callout:none; }
+  .ex-name{ font-size:14.5px; font-weight:600; line-height:1.3; }
+  .ex-card input{ user-select:text; -webkit-touch-callout:default; }
   .ex-target{
     flex-shrink:0; text-align:right; font-family:'JetBrains Mono',monospace;
     font-size:11px; color:var(--brass); white-space:nowrap;
@@ -388,7 +395,8 @@
       </div>
       <div class="session-timer">
         <div class="session-timer-label">Séance</div>
-        <div class="session-timer-time num" id="sessionTimerTime">0:00</div>
+        <button type="button" class="session-timer-start hidden" id="sessionTimerStartBtn">▶ Démarrer</button>
+        <div class="session-timer-time num hidden" id="sessionTimerTime">0:00</div>
       </div>
     </div>
 
@@ -1223,23 +1231,27 @@ function getPosition(week){
 let sessionTimerInterval = null;
 
 function getSessionStartTime(){
-  let start = localStorage.getItem('sessionStartTime');
-  if (!start){
-    start = Date.now().toString();
-    localStorage.setItem('sessionStartTime', start);
-  }
-  return parseInt(start, 10);
+  const start = localStorage.getItem('sessionStartTime');
+  return start ? parseInt(start, 10) : null;
 }
 
-function resetSessionTimer(){
-  localStorage.setItem('sessionStartTime', Date.now().toString());
-  updateSessionTimerDisplay();
+function showSessionTimerUI(){
+  const startBtn = document.getElementById('sessionTimerStartBtn');
+  const timeEl = document.getElementById('sessionTimerTime');
+  if (getSessionStartTime() !== null){
+    startBtn.classList.add('hidden');
+    timeEl.classList.remove('hidden');
+  } else {
+    startBtn.classList.remove('hidden');
+    timeEl.classList.add('hidden');
+  }
 }
 
 function updateSessionTimerDisplay(){
   const el = document.getElementById('sessionTimerTime');
-  if (!el) return;
-  const elapsedSec = Math.max(0, Math.floor((Date.now() - getSessionStartTime()) / 1000));
+  const start = getSessionStartTime();
+  if (!el || start === null) return;
+  const elapsedSec = Math.max(0, Math.floor((Date.now() - start) / 1000));
   const h = Math.floor(elapsedSec / 3600);
   const m = Math.floor((elapsedSec % 3600) / 60);
   const s = elapsedSec % 60;
@@ -1249,10 +1261,25 @@ function updateSessionTimerDisplay(){
 }
 
 function startSessionTimerClock(){
+  if (sessionTimerInterval){ clearInterval(sessionTimerInterval); sessionTimerInterval = null; }
+  if (getSessionStartTime() === null) return;
   updateSessionTimerDisplay();
-  if (sessionTimerInterval) clearInterval(sessionTimerInterval);
   sessionTimerInterval = setInterval(updateSessionTimerDisplay, 1000);
 }
+
+function manuallyStartSessionTimer(){
+  localStorage.setItem('sessionStartTime', Date.now().toString());
+  showSessionTimerUI();
+  startSessionTimerClock();
+}
+
+function stopAndResetSessionTimer(){
+  localStorage.removeItem('sessionStartTime');
+  if (sessionTimerInterval){ clearInterval(sessionTimerInterval); sessionTimerInterval = null; }
+  showSessionTimerUI();
+}
+
+document.getElementById('sessionTimerStartBtn').addEventListener('click', manuallyStartSessionTimer);
 
 let programOpen = false;
 
@@ -1541,9 +1568,9 @@ async function renderExercises(){
       await renderExercises();
     });
 
-    const nameEl = card.querySelector('.ex-name');
     let longPressTimer = null;
-    const startLongPress = () => {
+    const startLongPress = (e) => {
+      if (e.target.closest('input, button')) return;
       longPressTimer = setTimeout(() => {
         document.querySelectorAll('#exList .ex-card.current').forEach(c => c.classList.remove('current'));
         card.classList.remove('done');
@@ -1554,11 +1581,11 @@ async function renderExercises(){
     const cancelLongPress = () => {
       if (longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }
     };
-    nameEl.addEventListener('pointerdown', startLongPress);
-    nameEl.addEventListener('pointerup', cancelLongPress);
-    nameEl.addEventListener('pointerleave', cancelLongPress);
-    nameEl.addEventListener('pointercancel', cancelLongPress);
-    nameEl.addEventListener('contextmenu', (e) => e.preventDefault());
+    card.addEventListener('pointerdown', startLongPress);
+    card.addEventListener('pointerup', cancelLongPress);
+    card.addEventListener('pointerleave', cancelLongPress);
+    card.addEventListener('pointercancel', cancelLongPress);
+    card.addEventListener('contextmenu', (e) => { if (!e.target.closest('input, button')) e.preventDefault(); });
 
     saveBtn.addEventListener('click', async () => {
       const poids = noLoad ? 0 : parseFloat(wInput.value);
@@ -1606,7 +1633,7 @@ document.getElementById('validateBtn').addEventListener('click', async () => {
   const ok = await saveCount(completedCount);
   if(!ok){ completedCount -= 1; alert("Erreur d'enregistrement, réessaie."); return; }
   stopRestTimer();
-  resetSessionTimer();
+  stopAndResetSessionTimer();
   render();
 });
 
@@ -1648,6 +1675,7 @@ document.getElementById('undoBtn').addEventListener('click', async () => {
 async function init(){
   completedCount = await loadCount();
   render();
+  showSessionTimerUI();
   startSessionTimerClock();
 }
 
