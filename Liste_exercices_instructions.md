@@ -23,6 +23,7 @@
 2. Descendre en amplitude complète si possible
 3. En cas de douleur au sternum/épaule, réduire légèrement l'amplitude plutôt que d'abandonner l'exercice
 4. Progresser la charge (lest) petit à petit
+5. Si pas encore capable de faire des dips complets et en l'absence de machine assistée dédiée : utiliser une bande élastique en boucle autour des barres, genou ou pied posé dedans, pour s'assister sur la remontée
 
 ### Développé à la machine convergente
 **Vidéo** : https://www.youtube.com/watch?v=qq_bX5iw0HY&t=344s
